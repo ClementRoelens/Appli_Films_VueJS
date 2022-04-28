@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un film</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <ul v-if="films">
+                <li @click="getOneFilm(film._id)" v-for="(film) in films" :key="film._id">{{film.titre}}</li>
+            </ul>
+            <button onclick="window.location.href='ajout.html'">Ajouter un film</button>
+        </header>
+        <div id="general">
+            <h1>{{titre}}</h1>
+            <img :src="path" :alt="titre">
+            <section>
+                <h2 id="real">{{realisateur}}</h2>
+                <h2 id="date">Sorti le {{date}}</h2>
+                <div id="synopsis">
+                    <h3>{{description}}</h3>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
