@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,19 +10,25 @@
     <script src="https://unpkg.com/vue@3"></script>
 </head>
 </head>
+
 <body>
-    <form id="app">
-        <label for="titre">Titre : </label>
-        <input type="text" name="titre" id="titre" required>
-        <label for="realisateur">Réalisateur : </label>
-        <input type="text" name="realisateur" id="realisateur" required>
-        <label for="description">Description : </label>
-        <textarea name="description" id="description" required></textarea>
-        <label for="date">Date de sortie : </label>
-        <input type="date" name="date" id="date" required>
-        <input type="file" name="image" id="image" required>
-        <button @click.prevent="submit()">Ajouter</button> 
-    </form>
+    <div id="app">
+        <form>
+            <label for="titre">Titre : </label>
+            <input type="text" name="titre" id="titre" required>
+            <label for="realisateur">Réalisateur : </label>
+            <input type="text" name="realisateur" id="realisateur" required>
+            <label for="description">Description : </label>
+            <textarea name="description" id="description" required></textarea>
+            <label for="date">Date de sortie : </label>
+            <input type="date" name="date" id="date" required>
+            <input type="file" name="image" id="image" required>
+            <button @click.prevent="submit()">Ajouter</button>
+        </form>
+    </div>
+
+
     <script src="ajout.js"></script>
 </body>
+
 </html>

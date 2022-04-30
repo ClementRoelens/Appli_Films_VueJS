@@ -6,9 +6,8 @@ const filmSchema = mongoose.Schema({
     description: { type: String, required: true },
     date: { type: Date, required: true },
     likes: { type: Number, required: false },
-    avis: { type: [String], required: false }
-    // image: { type: String, required: true },
-
+    avis: { type: [String], required: false },
+    imageUrl: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Film', filmSchema);

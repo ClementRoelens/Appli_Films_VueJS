@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const filmRoutes = require('./routes/film');
 const path = require('path');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 const mongoose = require('mongoose');
 mongoose.connect("mongodb+srv://ClementRoelens:Test1234@cluster0.62z4x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
@@ -14,7 +14,7 @@ mongoose.connect("mongodb+srv://ClementRoelens:Test1234@cluster0.62z4x.mongodb.n
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use(express.json());
-app.use(bodyParser.urlencoded({limit: '5000mb', extended: true, parameterLimit: 100000000000}));
+// app.use(bodyParser.urlencoded({limit: '5000mb', extended: true, parameterLimit: 100000000000}));
 
 // Mise en place des headers gérant la CORS Policy
 app.use((req, res, next) => {
