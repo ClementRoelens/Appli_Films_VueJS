@@ -3,9 +3,17 @@ const Film = require('../models/film');
 const fs = require('fs');
 
 exports.tousLesFilms = (req, res, next) => {
-    // console.log("Réception de requête tousLesFilms");
     Film.find()
-        .then(films => { res.status(200).json(films) })
+        .then(films => { 
+            var filmsTransmis = [];
+            films.forEach(film => {
+                var tempFilm = film.toJSON();
+                tempFilm.date = tempFilm.date.toLocaleDateString();  
+                filmsTransmis.push(tempFilm);  
+            });
+            
+            res.status(200).json(filmsTransmis) 
+        })
         .catch((error) => {
             console.log("erreur : " + error);
             res.status(400).json(error);
@@ -15,36 +23,40 @@ exports.tousLesFilms = (req, res, next) => {
 exports.unFilm = (req, res, next) => {
     Film.findOne({
         _id: req.params.id
-    }).then(film => res.status(200).json(film))
+    }).then(filmBrut => {
+        // Le format de date n'étant pas désiré, on convertit l'objet en JSON pour pouvoir convertir la propriété au format voulu
+        var film = filmBrut.toJSON();
+        film.date = film.date.toLocaleDateString();
+        res.status(200).json(film);
+    })
         .catch(error => res.status(404).json(error))
 };
 
 exports.ajouter = (req, res, next) => {
-    console.log("Entrée dans la fonction 'Ajouter un film'")
-    const film = new Film({
-        ...req.body,
-        //Multer a été passé en middleware de la route et enregistre l'image dans le dossier Images du serveur
-        //On passe donc l'URL de l'image 
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    // L'image est passée par Multer et a été enregistrée dans le serveur
+    // On recompose l'objet car les genres sont passés en String et on les veut en Array
+
+    // ET VALIDATION
+    var tempFilm = req.body;
+    var film = new Film({
+        titre: tempFilm.titre,
+        realisateur: tempFilm.realisateur,
+        description: tempFilm.description,
+        date: tempFilm.date,
+        genre: tempFilm.genres.split(','),
+        imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
+    
     film.save()
-        .then(() => {
-            console.log(film.titre + ' correctement ajouté.');
-            res.status(201).json({ message: film.titre + ' ajouté' });
-        })
-        .catch(error => {
-            res.status(400).json({ error });
-            console.log('Erreur');
-        })
+        .then(() => res.status(201).json({ message: film.titre + ' correctement ajouté' }))
+        .catch(error => res.status(400).json({ error }))
 };
 
 exports.supprimer = (req, res, next) => {
-    film.findOne({ _id: req.params.id })
+    film.deleteOne({ _id: req.params.id })
         .then(() => {
-            film.deleteOne({ _id: req.params.id })
-                .then(() => res.status(200).json({ message: 'Objet supprimé !' }))
-                .catch(error => res.status(400).json({ error }));
-        })
-        .catch(error => res.status(404).json(error));
-};
 
+            res.status(200).json({ message: req.params.titre + ' supprimé ' })
+        })
+        .catch(error => res.status(400).json({ error }));
+};

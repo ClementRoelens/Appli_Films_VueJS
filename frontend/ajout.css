@@ -1,13 +1,52 @@
 form {
-    display:flex;
+    margin: auto;
+    display: flex;
     flex-direction: column;
-    width:30%;
-    margin:auto;
-    margin-top:50px;
+    width: 375px;
+    position: relative;
+    top: 50px;
 }
 
-input[type="submit"] {
-    width:50%;
-    margin:auto;
-    margin-top:30px;
+form>* {
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+fieldset {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.genreSelection {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+}
+
+.genreSelection label {
+    width: 65px;
+}
+
+input[type="file"] {
+    margin-top: 12px;
+}
+
+button {
+    width: 100px;
+    height: 35px;
+    margin: auto;
+    margin-top: 30px;
+}
+
+#validationMessage {
+    width: 420px;
+    margin: auto;
+    text-align:justify;
+    font-size: 1.6em;
+    position:relative;
+    top:80px;
+    text-decoration: underline;
 }

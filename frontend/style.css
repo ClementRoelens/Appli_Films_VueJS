@@ -1,12 +1,6 @@
-body {
-    background-color: rgb(50, 50, 50);
-    color: white;
-}
-
 div#app {
     display: flex;
     flex-direction: row;
-    margin-top: 60px;
 }
 
 ul {
@@ -14,11 +8,11 @@ ul {
 }
 
 li {
-    border:solid 1px white;
-    padding:7px;
-    text-align:center;
-    font-size:1.1em;
-    cursor:pointer;
+    border: solid 1px white;
+    padding: 7px;
+    text-align: center;
+    font-size: 1.1em;
+    cursor: pointer;
 }
 
 button {
@@ -43,51 +37,39 @@ button {
 }
 
 h1 {
-    font-size: 2.4em;
-    margin-top:0;
+    font-weight: 100;
+    font-size: 2.9em;
+    margin: 0 auto 0 auto;
 }
 
 img {
-    margin: 50px auto 50px auto;
+    margin: 35px auto 30px auto;
+    width: 250px;
 }
 
 h2 {
-    font-size: 1.4em;
     font-weight: normal;
+    margin-top: 0;
+}
+
+#real {
+    font-size: 1.7em;
+}
+
+#date {
+    font-size: 1.4em;
 }
 
 #synopsis {
-    margin-top: 30px;
+    margin-top: 20px;
     width: 80%;
     border: 1px white solid;
     border-radius: 5px;
     padding: 15px;
+    text-align: center;
 }
 
 h3 {
     font-size: 1.3em;
     font-weight: normal;
-}
-
-form {
-    margin:auto;
-    display:flex;
-    flex-direction:column;
-    width:350px;
-    position:relative;
-    top:50px;
-}
-
-form > * {
-    margin-bottom:3px;
-    margin-top:3px;
-}
-
-form button {
-    width:100px;
-    margin-top:20px;
-}
-
-input[type="file"] {
-    margin-top:12px;
 }

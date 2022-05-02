@@ -7,6 +7,7 @@ const filmSchema = mongoose.Schema({
     date: { type: Date, required: true },
     likes: { type: Number, required: false },
     avis: { type: [String], required: false },
+    genre: { type: [String], required: true },
     imageUrl: { type: String, required: true }
 });
 

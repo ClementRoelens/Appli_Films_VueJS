@@ -1,5 +1,3 @@
-const URL = "http://localhost:3000/film/";
-
 const app = Vue.createApp({
     data() {
         return {
@@ -8,15 +6,17 @@ const app = Vue.createApp({
             realisateur: '',
             date: '',
             description: '',
+            genre:[],
             path: '',
-            films: []
-        }
+            films: [],
+            URL : "http://localhost:3000/film/"
+        };
     },
     methods: {
         getAllFilms() {
             var myInit = { method: 'GET' };
 
-            fetch(URL, myInit)
+            fetch(this.URL, myInit)
                 .then(res => res.json()
                     .then(json => {
                         this.films = json;
@@ -28,7 +28,7 @@ const app = Vue.createApp({
             if (id) {
                 var myInit = { method: 'GET' };
 
-                fetch(URL + id, myInit)
+                fetch(this.URL + id, myInit)
                     .then(res => res.json()
                         .then(filmChoisi => {
                             this.id = filmChoisi._id;
@@ -36,7 +36,7 @@ const app = Vue.createApp({
                             this.realisateur = filmChoisi.realisateur;
                             this.date = filmChoisi.date;
                             this.description = filmChoisi.description;
-                            this.path = 'images/' + filmChoisi.titre + '.jpg';
+                            this.path = filmChoisi.imageUrl;
                         })
                     )
                     .catch(error => console.log(error))
@@ -44,7 +44,7 @@ const app = Vue.createApp({
             else {
                 var myInit = { method: 'GET' };
 
-                fetch(URL, myInit)
+                fetch(this.URL, myInit)
                     .then(res => res.json()
                         .then(films => {
                             var rand = Math.round(Math.random() * films.length);
@@ -55,7 +55,7 @@ const app = Vue.createApp({
                             this.realisateur = filmChoisi.realisateur;
                             this.date = filmChoisi.date;
                             this.description = filmChoisi.description;
-                            this.path = 'images/' + filmChoisi.titre + '.jpg';
+                            this.path = filmChoisi.imageUrl;
                         })
                     )
                     .catch(error => console.log(error))
@@ -71,11 +71,10 @@ const app = Vue.createApp({
 
 //TO DO
 
-//Modèle
+// Décider le nom de l'imageUrl
+// Puis appliquer la suppression dans le controller
 
-//Likes
 //Genre
-//Avis
 //
 //Rajouter des films
 //Système de notations pour tout le monde
