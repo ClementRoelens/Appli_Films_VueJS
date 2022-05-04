@@ -6,61 +6,129 @@ const app = Vue.createApp({
             realisateur: '',
             date: '',
             description: '',
-            genre:[],
+            // genre:[],
             path: '',
             films: [],
-            URL : "http://localhost:3000/film/"
+            Url: "http://localhost:3000/film/",
+            // Ces genres sont utilisés pour construire la liste des genres en utilisant un v-for.
+            // La propriété "active" est utilisée pour montrer à quel genre le film sélectionné appartient
+            genres: [
+                {
+                    'nom': 'Action',
+                    'active': false
+                },
+                {
+                    'nom': 'Aventure',
+                    'active': false
+                },
+                {
+                    'nom': 'Comédie',
+                    'active': false
+                },
+                {
+                    'nom': 'Drame',
+                    'active': false
+                },
+                {
+                    'nom': 'Fantasy',
+                    'active': false
+                },
+                {
+                    'nom': 'Horreur',
+                    'active': false
+                },
+                {
+                    'nom': 'Romance',
+                    'active': false
+                },
+                {
+                    'nom': 'Science-fiction',
+                    'active': false
+                },
+                {
+                    'nom': 'Thriller',
+                    'active': false
+                }
+            ]
         };
     },
     methods: {
         getAllFilms() {
-            var myInit = { method: 'GET' };
+            const myInit = { method: 'GET' };
 
-            fetch(this.URL, myInit)
+            fetch(this.Url, myInit)
                 .then(res => res.json()
-                    .then(json => {
-                        this.films = json;
+                    .then(films => {
+                        this.films = films;
                     })
                 )
                 .catch(error => console.log(error));
         },
         getOneFilm(id) {
             if (id) {
-                var myInit = { method: 'GET' };
+                const myInit = { method: 'GET' };
 
-                fetch(this.URL + id, myInit)
+                fetch(this.Url + 'par_id/' + id, myInit)
                     .then(res => res.json()
                         .then(filmChoisi => {
-                            this.id = filmChoisi._id;
-                            this.titre = filmChoisi.titre;
-                            this.realisateur = filmChoisi.realisateur;
-                            this.date = filmChoisi.date;
-                            this.description = filmChoisi.description;
-                            this.path = filmChoisi.imageUrl;
+                            this.assignationFilm(filmChoisi)
                         })
                     )
                     .catch(error => console.log(error))
             }
             else {
-                var myInit = { method: 'GET' };
+                const myInit = { method: 'GET' };
 
-                fetch(this.URL, myInit)
+                fetch(this.Url, myInit)
                     .then(res => res.json()
                         .then(films => {
-                            var rand = Math.round(Math.random() * films.length);
-                            var filmChoisi = films[rand - 1];
+                            this.films = films;
+                            const rand = Math.round(Math.random() * (films.length - 1));
+                            const filmChoisi = films[rand];
 
-                            this.id = filmChoisi._id;
-                            this.titre = filmChoisi.titre;
-                            this.realisateur = filmChoisi.realisateur;
-                            this.date = filmChoisi.date;
-                            this.description = filmChoisi.description;
-                            this.path = filmChoisi.imageUrl;
+                            this.assignationFilm(filmChoisi);
                         })
                     )
                     .catch(error => console.log(error))
             }
 
+        },
+        assignationFilm(film) {
+            this.id = film._id;
+            this.titre = film.titre;
+            this.realisateur = film.realisateur;
+            this.date = film.date;
+            this.description = film.description;
+            this.path = film.imageUrl;
+
+
+            this.genres.forEach(genre => {
+                genre.active = film.genre.includes(genre.nom) ? true : false;
+            });
+
+        },
+        rechercheParGenre(selection) {
+            this.recupererTousLesFilms('par_genre/' + selection);
+        },
+        rechercheParReal(selection) {
+            this.recupererTousLesFilms('par_real/' + selection);
+        },
+        recupererTousLesFilms(paramUrl) {
+            // Cette fonction récupère tous les films selon un critère ou non
+            const myInit = { method: 'GET' };
+            const requeteUrl = paramUrl ? this.Url + paramUrl : this.Url;
+
+            fetch(requeteUrl, myInit)
+                .then(res => res.json()
+                    .then(films => {
+                        // En récupérer 25
+                        this.films = films;
+                        // Une fois tous les films récupérés et passés dans notre data, on en prend un au hasard pour l'assigner
+                        const rand = Math.round(Math.random() * (films.length - 1));
+                        const filmChoisi = films[rand];
+                        this.assignationFilm(filmChoisi);
+                    }))
+                .catch(error => console.log(error))
         }
     },
     created() {
@@ -69,14 +137,16 @@ const app = Vue.createApp({
     }
 }).mount("#app");
 
+
 //TO DO
 
-// Décider le nom de l'imageUrl
-// Puis appliquer la suppression dans le controller
+// Date au rechagrement par genre
 
-//Genre
+//Validation des données dans le controller backend
 //
-//Rajouter des films
+//repasser sur les genres et dates
+
 //Système de notations pour tout le monde
 //Système de comptes pour pouvoir écrire des avis
 
+// Une fois tout fini : revoir les CORS-policies...

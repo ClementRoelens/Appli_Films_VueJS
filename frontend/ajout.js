@@ -23,11 +23,11 @@ const app = Vue.createApp({
             // J'utilise ici une validation manuelle "à l'ancienne", n'ayant rien trouvé qui me satisfasse assez en utilisant les capacités de Vue JS. 
             // Il existe certainement une meilleure méthode
 
-            var isValide = true;
+            let isValide = true;
 
             // On crée un objet FormData qui contiendra nos données et notre image
-            var formData = new FormData();
-            var form = document.querySelectorAll('form input , form textarea');
+            const formData = new FormData();
+            const form = document.querySelectorAll('form input , form textarea');
             // On fait une première boucle pour récupérer les valeurs des champs de saisie simples, et on sort si une valeur est vide
             for (i = 0; i < 4 ; i++) {
                 if (form[i].value !== '') {
@@ -40,8 +40,8 @@ const app = Vue.createApp({
             }
             if (isValide) {
                 // Puis on traite la checkbox en ajoutant à FormData tous les éléments checkés
-                var checkedGenres = new Array();
-                var checkableGenres = document.querySelectorAll("input[type='checkbox'");
+                const checkedGenres = new Array();
+                const checkableGenres = document.querySelectorAll("input[type='checkbox'");
                 checkableGenres.forEach(genre => {
                     if (genre.checked) {
                         checkedGenres.push(genre.value);
@@ -54,7 +54,7 @@ const app = Vue.createApp({
                 else {
                     formData.append('genres', checkedGenres);
                     // Enfin, on ajoute l'image
-                    var image = form[form.length - 1].files[0];
+                    const image = form[form.length - 1].files[0];
                     if (!image){
                         isValide = false;
                     }
@@ -66,12 +66,14 @@ const app = Vue.createApp({
                                 body: formData,
                                 method: "post"
                             })
+                            .then(()=>window.location.href='index.html')
+                            .catch(error=>console.log(error))
                     }                  
                 }
             }
             // Si le formulaire n'est pas validé, on affiche un message
             if (!isValide){
-                var message = document.getElementById('validationMessage');
+                const message = document.getElementById('validationMessage');
                 message.innerHTML = 'Tous les champs doivent être remplis et au moins un genre doit être sélectionné'
             }
         },

@@ -3,8 +3,13 @@ div#app {
     flex-direction: row;
 }
 
+header{
+    margin-left:40px;
+}
+
 ul {
     list-style: none;
+    padding-left:0;
 }
 
 li {
@@ -56,6 +61,11 @@ h2 {
     font-size: 1.7em;
 }
 
+#real:hover {
+    cursor:pointer;
+    text-decoration: underline;
+}
+
 #date {
     font-size: 1.4em;
 }
@@ -72,4 +82,17 @@ h2 {
 h3 {
     font-size: 1.3em;
     font-weight: normal;
+}
+
+#genres {
+    margin-right: 40px;
+    margin-top: 35px;
+}
+
+.genres {
+    color: rgb(95, 95, 95)
+}
+
+.genresActif {
+    color: white;
 }
