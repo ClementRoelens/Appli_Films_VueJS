@@ -1,8 +1,9 @@
+
 form {
     margin: auto;
     display: flex;
     flex-direction: column;
-    width: 375px;
+    width: 420px;
     position: relative;
     top: 50px;
 }
@@ -15,7 +16,7 @@ form>* {
 fieldset {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     margin-top: 15px;
     margin-bottom: 15px;
 }
@@ -27,7 +28,11 @@ fieldset {
 }
 
 .genreSelection label {
-    width: 65px;
+    width: 75px;
+}
+
+input[type="checkbox"] {
+    align-self:center;
 }
 
 input[type="file"] {

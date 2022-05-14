@@ -1,17 +1,27 @@
 const app = Vue.createApp({
     data() {
         return {
-            URL:'http://localhost:3000/film/',
+            Url:'http://localhost:3000/film/',
+            //TO DO
+            //______
+            // Genres à rajouter
+                // expérimental  
+                // historique
+            //______
+            //TO DO
             genres: [
                 'Action',
                 'Aventure',
                 'Comédie',
                 'Drame',
                 'Fantasy',
+                'Guerre',
+                'Historique',
                 'Horreur',
                 'Romance',
                 'Science-fiction',
-                'Thriller'
+                'Thriller',
+                'Western'
             ]
         };
     },
@@ -61,10 +71,10 @@ const app = Vue.createApp({
                     else {
                         formData.append('file', form[form.length - 1].files[0])
                         // Maintenant que toutes les données ont été rajoutés et sont valides, on envoie la requête
-                        fetch(this.URL,
+                        fetch(this.Url,
                             {
                                 body: formData,
-                                method: "post"
+                                method: "POST"
                             })
                             .then(()=>window.location.href='index.html')
                             .catch(error=>console.log(error))
