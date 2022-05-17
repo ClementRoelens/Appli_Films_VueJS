@@ -6,26 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Un film</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/global.css">
     <script src="https://unpkg.com/vue@3"></script>
 </head>
 
 <body>
     <div id="app">
-        <button id="ajout" @click="window.location.href='ajout.html'" v-if="isAdmin">Ajouter un film</button>
+        <button id="ajout" onclick="window.location.href='./ajout.html'" v-if="isAdmin">Ajouter un film</button>
         <div id="compte">
             <div id="authentification">
-                <button @click="login()">{{isLogged? "Déconnexion" : "Connexion"}}</button>
+                <button onclick="window.location.href='./connexion.html'">{{isLogged? "Déconnexion" : "Connexion"}}</button>
             </div>
-            <h2>Bonjour {{nom}}!</h2>
+            <h2>Bonjour {{pseudo}}!</h2>
             <div id="rightCompte">
-                <button v-if="!isLogged">Inscription</button>
-                <div v-if="isLogged">
-                    Films aimés : {{userLikes}}
+                <button v-if="!isLogged" onclick="window.location.href='./inscription.html'" >Inscription</button>
+                <div v-if="likedFilmsId">
+                    Films aimés : {{likedFilmsId.length}}
                 </div>
-                <div v-if="isLogged">
-                    Avis laissés : {{userAvis}}
+                <div v-if="noticesFilmsId">
+                    Avis laissés : {{noticesFilmsId.length}}
                 </div>
             </div>
         </div>
@@ -40,15 +40,15 @@
                 <div id="centre">
                     <div id="avis_et_likes">
                         <div id="likes">
-                            <img @click="like()" class="icons" src="icons/thumbup.png" alt="Likes">
+                            <img @click="like()" class="icons" src="../icons/thumbup.png" alt="Likes">
                             <div>{{likes}}</div>
                         </div>
                         <div id="dislikes">
-                            <img @click="dislike()" class="icons" src="icons/thumbdown.png" alt="Likes">
+                            <img @click="dislike()" class="icons" src="../icons/thumbdown.png" alt="Likes">
                             <div>{{dislikes}}</div>
                         </div>
                         <div id="avis">
-                            <img @click="ajouterAvis()" class="icons" src="icons/note.png" alt="Avis">
+                            <img @click="ajouterAvis()" class="icons" src="../icons/note.png" alt="Avis">
                             <div>{{avis.length}}</div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
     </div>
 
 
-    <script src="main.js"></script>
+    <script src="../scripts/main.js"></script>
 </body>
 
 </html>

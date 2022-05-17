@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/inscription.css">
+    <link rel="stylesheet" href="../styles/authentification.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <title>Connexion</title>
+</head>
+
+<body>
+    <div id="app">
+        <h1>Inscription</h1>
+        <form>
+            <label for="pseudo">Pseudo : </label>
+            <input type="text" name="pseudo" v-model="pseudo">
+            <label for="password">Mot de passe : </label>
+            <input type="password" name="password" v-model="password">
+        </form>
+        <button @click="inscription()">Inscription</button>
+    </div>
+    <script src="../scripts/inscription.js"></script>
+</body>
+
+</html>

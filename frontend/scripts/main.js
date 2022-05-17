@@ -1,9 +1,10 @@
 const app = Vue.createApp({
     data() {
         return {
-            Url: "http://localhost:3000/film/",
+            // Peut-être doit-on utiliser une dépendance pour stocker la valeur de l'URL?
+            Url: "http://localhost:3000/",
             // Variables des films
-            id: '',
+            filmId: '',
             titre: '',
             realisateur: '',
             date: '',
@@ -67,18 +68,21 @@ const app = Vue.createApp({
                 }
             ],
             // Variables des comptes
-            nom:'visiteur',
-            isLogged:false,
-            isAdmin:false,
-            userLikes:0,
-            userAvis:0
+            userId:"",
+            pseudo: 'visiteur',
+            isLogged: false,
+            isAdmin: false,
+            likedFilmsId: [],
+            noticesFilmsId: [],
+            likedNoticesId: [],
+            token: ''
         };
     },
     methods: {
         recupérerTousLesFilms() {
             const myInit = { method: 'GET' };
 
-            fetch(this.Url, myInit)
+            fetch(this.Url + "film/", myInit)
                 .then(res => res.json()
                     .then(films => {
                         this.films = films;
@@ -90,7 +94,7 @@ const app = Vue.createApp({
             if (id) {
                 const myInit = { method: 'GET' };
 
-                fetch(this.Url + 'par_id/' + id, myInit)
+                fetch(this.Url + 'film/par_id/' + id, myInit)
                     .then(res => res.json()
                         .then(filmChoisi => this.assignationFilm(filmChoisi))
                     )
@@ -99,7 +103,7 @@ const app = Vue.createApp({
             else {
                 const myInit = { method: 'GET' };
 
-                fetch(this.Url + 'un_seul_au_hasard', myInit)
+                fetch(this.Url + 'film/un_seul_au_hasard', myInit)
                     .then(res => res.json()
                         .then(filmChoisi => this.assignationFilm(filmChoisi))
                     )
@@ -107,32 +111,16 @@ const app = Vue.createApp({
             }
 
         },
-        assignationFilm(film) {
-            this.id = film._id;
-            this.titre = film.titre;
-            this.realisateur = film.realisateur;
-            this.date = film.date;
-            this.description = film.description;
-            this.path = film.imageUrl;
-            this.likes = film.likes;
-            this.dislikes = film.dislikes;
-            this.avis = film.avis;
-
-            this.genres.forEach(genre => {
-                genre.active = film.genre.includes(genre.nom) ? true : false;
-            });
-
-        },
         rechercheParGenre(selection) {
-            this.recupererFilms('par_genre/' + selection);
+            this.recupererFilms('film/par_genre/' + selection);
         },
         rechercheParReal(selection) {
-            this.recupererFilms('par_real/' + selection);
+            this.recupererFilms('film/par_real/' + selection);
         },
         recupererFilms(paramUrl) {
             // Cette fonction récupère tous les films selon un critère ou non
             const myInit = { method: 'GET' };
-            const requeteUrl = paramUrl ? this.Url + paramUrl : this.Url + 'au_hasard';
+            const requeteUrl = paramUrl ? this.Url + paramUrl : this.Url + 'film/au_hasard';
 
             fetch(requeteUrl, myInit)
                 .then(res => res.json()
@@ -152,15 +140,15 @@ const app = Vue.createApp({
                 // Une fois l'authentification mise en place, faire un cancel dynamique
                 cancel: false
             };
-            fetch(this.Url + 'like/' + this.id,
-                {
-                    body: JSON.stringify(bodyReq),
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' }
-                }
-            ).then(res => res.json()
-                .then(film => this.assignationFilm(film))
-            )
+            const myInit = {
+                body: JSON.stringify(bodyReq),
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' }
+            };
+            fetch(this.Url + 'film/like/' + this.filmId, myInit)
+                .then(res => res.json()
+                    .then(film => this.assignationFilm(film))
+                )
         },
         dislike() {
             const bodyReq = {
@@ -168,7 +156,7 @@ const app = Vue.createApp({
                 // Une fois l'authentification mise en place, faire un cancel dynamique
                 cancel: false
             };
-            fetch(this.Url + 'dislike/' + this.id,
+            fetch(this.Url + 'film/dislike/' + this.filmId,
                 {
                     body: JSON.stringify(bodyReq),
                     method: "POST",
@@ -181,22 +169,48 @@ const app = Vue.createApp({
         ajouterAvis() {
 
         },
-        login(){
-           if (this.isLogged){
-               this.isLogged = false;
-               this.isAdmin = false;
-               this.nom = 'visiteur';
-           }
-           else{
-               this.isLogged = true;
-               this.isAdmin = true;
-               this.nom = "Clément";
-           }
+        assignationFilm(film) {
+            this.filmId = film._id;
+            this.titre = film.titre;
+            this.realisateur = film.realisateur;
+            this.date = film.date;
+            this.description = film.description;
+            this.path = film.imageUrl;
+            this.likes = film.likes;
+            this.dislikes = film.dislikes;
+            this.avis = film.avis;
+
+            this.genres.forEach(genre => {
+                genre.active = film.genre.includes(genre.nom) ? true : false;
+            });
+
+        },
+        login() {
+            if (this.isLogged) {
+                this.isLogged = false;
+                this.isAdmin = false;
+                this.nom = 'visiteur';
+            }
+            else {
+                this.isLogged = true;
+                this.isAdmin = true;
+                this.nom = "Clément";
+            }
         }
     },
     created() {
         this.recupererFilms();
         this.getOneFilm();
+        this.token = localStorage.getItem("token");
+        if (this.token != '') {
+            console.log("Le token est présent!");
+            this.isLogged = true;
+            this.pseudo = localStorage.getItem("pseudo");
+            this.isAdmin = localStorage.getItem("isAdmin");
+            this.likedFilmsdId = JSON.parse(localStorage.getItem("likedFilmsdId"));
+            this.noticesFilmsId = JSON.parse(localStorage.getItem("noticesFilmsId"));
+            this.likedNoticesId = JSON.parse(localStorage.getItem("likedNoticesId"));
+        }
     }
 }).mount("#app");
 
@@ -213,7 +227,12 @@ const app = Vue.createApp({
 //
 //repasser sur les genres et dates
 
+//Utiliser le routing de VueJS plutôt que les window.location
 
 // Trouver un moyen de correctement centrer verticalement la section avis/likes/dislikes
+
+//Changer les URL des images pour ne pas intégrer le "localhost"...
+
+//Vérifier le fonctionnement du JWT et de la chaîne qu'on donne quand on sign
 
 // Une fois tout fini : revoir les CORS-policies...

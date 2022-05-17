@@ -5,24 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="ajout.css">
-    <link rel="stylesheet" href="global.css">
-    <title>Ajout de film</title>
+    <link rel="stylesheet" href="../styles/ajout.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <title>Modification de chaque film</title>
     <script src="https://unpkg.com/vue@3"></script>
+    <style>
+        h1,h2,h3{
+text-align:center;
+        }
+
+        img{
+            display:block;
+            width:200px;
+            margin:auto;
+        }
+
+        #validationMessage{
+            text-align:center;
+            opacity:0;
+        }
+    </style>
 </head>
 </head>
 
 <body>
     <div id="app">
+        <h1>MODIFICATION DE CHAQUE FILM</h1>
+        <H2>N'OUBLIE PAS DE SUPPRIMER</H2>
+
+        <h3>{{titre}}</h3>
+        <img :src="imageUrl" :alt="titre">
         <form>
-            <label for="titre">Titre : </label>
-            <input type="text" name="titre" id="titre" required>
-            <label for="realisateur">Réalisateur : </label>
-            <input type="text" name="realisateur" id="realisateur" required>
-            <label for="description">Description : </label>
-            <textarea name="description" id="description" required></textarea>
-            <label for="date">Date de sortie : </label>
-            <input type="date" name="date" id="date" required>
             <fieldset>
                 <legend>Genre(s) : </legend>
                 <div v-for="genre in genres" class="genreSelection">
@@ -32,12 +45,13 @@
             </fieldset>
             <input type="file" name="image" id="image" required>
             <button @click.prevent="submit()">Ajouter</button>
+            <button @click.prevent="suivant()">Passer</button>
         </form>
-        <div id="validationMessage"></div>
+        <div id="validationMessage" :style="messageStyle">{{message}}</div>
     </div>
 
 
-    <script src="ajout.js"></script>
+    <script src="../scripts/A_EFFACER_modiftousfilms.js"></script>
 </body>
 
 </html>

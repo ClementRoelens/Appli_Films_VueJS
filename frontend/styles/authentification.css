@@ -1,0 +1,24 @@
+h1{
+    text-align:center;
+    font-weight: normal;
+    margin-top:50px;
+}
+
+form {
+    display:flex;
+    flex-direction: column;
+    width:200px;
+    margin:auto;
+    margin-top:15px;
+}
+
+label {
+    margin-top:15px;
+    margin-bottom: 5px;
+}
+
+button{
+    display:block;
+    margin:auto;
+    margin-top:20px;
+}

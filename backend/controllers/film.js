@@ -1,6 +1,5 @@
 const Film = require('../models/film');
 const fs = require('fs');
-const { format } = require('path');
 
 
 // Certaines requêtes envoient un nombre limité de films. On fixe ce nombre ici

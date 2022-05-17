@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const filmRoutes = require('./routes/film');
+const userRoutes = require('./routes/user');
 const path = require('path');
 // const bodyParser = require('body-parser');
 
@@ -26,5 +27,6 @@ app.use((req, res, next) => {
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/film', filmRoutes);
+app.use('/user',userRoutes);
 
 module.exports = app;

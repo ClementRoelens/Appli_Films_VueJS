@@ -76,7 +76,7 @@ const app = Vue.createApp({
                                 body: formData,
                                 method: "POST"
                             })
-                            .then(()=>window.location.href='index.html')
+                            .then(()=>window.location.href='./index.html')
                             .catch(error=>console.log(error))
                     }                  
                 }
