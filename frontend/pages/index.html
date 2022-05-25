@@ -16,15 +16,19 @@
         <button id="ajout" onclick="window.location.href='./ajout.html'" v-if="isAdmin">Ajouter un film</button>
         <div id="compte">
             <div id="authentification">
-                <button onclick="window.location.href='./connexion.html'">{{isLogged? "Déconnexion" : "Connexion"}}</button>
+                <button onclick="window.location.href='./connexion.html'" v-if="!isLogged">Connexion</button>
+                <button @click="deconnexion()" v-if="isLogged">Déconnexion</button>
             </div>
             <h2>Bonjour {{pseudo}}!</h2>
             <div id="rightCompte">
                 <button v-if="!isLogged" onclick="window.location.href='./inscription.html'" >Inscription</button>
-                <div v-if="likedFilmsId">
+                <div v-if="isLogged">
                     Films aimés : {{likedFilmsId.length}}
                 </div>
-                <div v-if="noticesFilmsId">
+                <div v-if="isLogged">
+                    Films rejetés : {{dislikedFilmsId.length}}
+                </div>
+                <div v-if="isLogged">
                     Avis laissés : {{noticesFilmsId.length}}
                 </div>
             </div>
@@ -40,11 +44,11 @@
                 <div id="centre">
                     <div id="avis_et_likes">
                         <div id="likes">
-                            <img @click="like()" class="icons" src="../icons/thumbup.png" alt="Likes">
+                            <img @click="like()" class="icons" :src="likedIcon" alt="Likes">
                             <div>{{likes}}</div>
                         </div>
                         <div id="dislikes">
-                            <img @click="dislike()" class="icons" src="../icons/thumbdown.png" alt="Likes">
+                            <img @click="dislike()" class="icons" :src="dislikedIcon" alt="Likes">
                             <div>{{dislikes}}</div>
                         </div>
                         <div id="avis">
@@ -54,7 +58,7 @@
                     </div>
                     <img id="affiche" :src="path" :alt="titre">
                 </div>
-                <h2 id="real" @click="rechercheParReal(realisateur)">{{realisateur}}</h2>
+                <h2 id="real" @click="recupererFilms('au_hasard_par_real/',realisateur)">{{realisateur}}</h2>
                 <h2 id="date">Sorti le {{date}}</h2>
 
                 <div id="synopsis">
@@ -63,8 +67,9 @@
             </div>
             <div id="genres">
                 <ul>
-                    <li v-for="genre in genres" class="genres" :class="{'genresActif' : genre.active}"
-                        @click="rechercheParGenre(genre.nom)">{{genre.nom}}</li>
+                    <li v-for="(genre,index) in genres" :key="index"
+                        class="genres" :class="{'genresActif' : genre.active}"
+                        @click="recupererFilms('au_hasard_par_genre/',genre.nom)">{{genre.nom}}</li>
                 </ul>
             </div>
 

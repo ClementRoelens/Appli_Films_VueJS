@@ -1,14 +1,7 @@
 const app = Vue.createApp({
     data() {
         return {
-            Url:'http://localhost:3000/film/',
-            //TO DO
-            //______
-            // Genres à rajouter
-                // expérimental  
-                // historique
-            //______
-            //TO DO
+            Url: 'http://localhost:3000/film/',
             genres: [
                 'Action',
                 'Aventure',
@@ -22,7 +15,11 @@ const app = Vue.createApp({
                 'Science-fiction',
                 'Thriller',
                 'Western'
-            ]
+            ],
+            titre: "",
+            realisateur: "",
+            description: "",
+            date: ""
         };
     },
     methods: {
@@ -33,22 +30,17 @@ const app = Vue.createApp({
             // J'utilise ici une validation manuelle "à l'ancienne", n'ayant rien trouvé qui me satisfasse assez en utilisant les capacités de Vue JS. 
             // Il existe certainement une meilleure méthode
 
-            let isValide = true;
+            let isValide = false;
 
             // On crée un objet FormData qui contiendra nos données et notre image
             const formData = new FormData();
-            const form = document.querySelectorAll('form input , form textarea');
-            // On fait une première boucle pour récupérer les valeurs des champs de saisie simples, et on sort si une valeur est vide
-            for (i = 0; i < 4 ; i++) {
-                if (form[i].value !== '') {
-                    formData.append(form[i].name, form[i].value);
-                }
-                else {
-                    isValide = false;
-                    break;
-                }
-            }
-            if (isValide) {
+            // Et on ajoute les premiers champs si ceux-ci ont été remplis
+            if (this.titre && this.realisateur && this.description && this.date) {
+                formData.append("titre", this.titre);
+                formData.append("realisateur", this.realisateur);
+                formData.append("description", this.description);
+                formData.append("date", this.date);
+
                 // Puis on traite la checkbox en ajoutant à FormData tous les éléments checkés
                 const checkedGenres = new Array();
                 const checkableGenres = document.querySelectorAll("input[type='checkbox'");
@@ -58,34 +50,35 @@ const app = Vue.createApp({
                     }
                 })
                 // Au moins un genre doit être sélectionné
-                if (checkedGenres.length === 0) {
-                    isValide = false;
-                }
-                else {
+                if (checkedGenres.length !== 0) {
                     formData.append('genres', checkedGenres);
                     // Enfin, on ajoute l'image
-                    const image = form[form.length - 1].files[0];
-                    if (!image){
-                        isValide = false;
-                    }
-                    else {
-                        formData.append('file', form[form.length - 1].files[0])
-                        // Maintenant que toutes les données ont été rajoutés et sont valides, on envoie la requête
-                        fetch(this.Url,
+                    const image = document.getElementById("image").files[0];
+                    // On va vérifier qu'un fichier a bien été ajouté et que c'est bien une image
+                    const authorizedMimeTypes = ["image/jpg", "image/jpeg", "image/png"]
+                    if (image && authorizedMimeTypes.includes(image.type)) {
+                        formData.append('file', image)
+                        // Maintenant que toutes les données ont été rajoutés et sont valides, on confirme leur validité et n'affiche pas le message les demandant
+                        isValide = true;
+                        // Puis on envoie la requête
+                        fetch(this.Url + "ajout",
                             {
                                 body: formData,
                                 method: "POST"
                             })
-                            .then(()=>window.location.href='./index.html')
-                            .catch(error=>console.log(error))
-                    }                  
+                            .then(() => {
+                                window.location.href = './index.html'
+                            })
+                            .catch(error => console.log(error))
+                    }
                 }
             }
             // Si le formulaire n'est pas validé, on affiche un message
-            if (!isValide){
+            if (!isValide) {
                 const message = document.getElementById('validationMessage');
-                message.innerHTML = 'Tous les champs doivent être remplis et au moins un genre doit être sélectionné'
+                message.innerHTML = 'Tous les champs doivent être remplis, au moins un genre doit être sélectionné, et le fichier sélectionné doit être une image au format .jpg ou .png'
             }
+
         },
     }
 }).mount("#app");

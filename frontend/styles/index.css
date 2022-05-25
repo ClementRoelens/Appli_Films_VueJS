@@ -5,8 +5,8 @@ div#app {
 
 #ajout {
     position: absolute;
-    top: 15px;
-    left: 131px;
+    top: 10px;
+    right: 60px;
 }
 
 button {
@@ -48,6 +48,7 @@ button {
 
 #compte div div {
     margin-top: 5px;
+    font-size:0.8em;
 }
 
 #compte h2 {
@@ -60,13 +61,13 @@ button {
     width: 110px;
 }
 
+
 #contenu {
     display: flex;
     margin-top: 15px;
 }
 
-#gauche,
-#genres {
+#gauche , #genres {
     width: 20%;
 }
 

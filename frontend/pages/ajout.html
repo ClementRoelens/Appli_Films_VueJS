@@ -16,13 +16,13 @@
     <div id="app">
         <form>
             <label for="titre">Titre : </label>
-            <input type="text" name="titre" id="titre" required>
+            <input type="text" name="titre" id="titre" v-model="titre" required>
             <label for="realisateur">Réalisateur : </label>
-            <input type="text" name="realisateur" id="realisateur" required>
+            <input type="text" name="realisateur" id="realisateur" v-model="realisateur" placeholder="Stanley Kubrick" value="Stanley Kubrick" required>
             <label for="description">Description : </label>
-            <textarea name="description" id="description" required></textarea>
+            <textarea name="description" id="description" v-model="description" required></textarea>
             <label for="date">Date de sortie : </label>
-            <input type="date" name="date" id="date" required>
+            <input type="date" name="date" id="date" v-model="date" required>
             <fieldset>
                 <legend>Genre(s) : </legend>
                 <div v-for="genre in genres" class="genreSelection">

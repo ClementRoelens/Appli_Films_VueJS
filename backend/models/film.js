@@ -5,11 +5,11 @@ const filmSchema = mongoose.Schema({
     realisateur: { type: String, required: true },
     description: { type: String, required: true },
     date: { type: Date, required: true },
-    likes: { type: Number, required: true },
-    dislikes: { type: Number, required: true },
+    likes: { type: Number, required: true, default:[] },
+    dislikes: { type: Number, required: true, default:[] },
     // Le champ avis désigne en fait les id des avis
-    avis: { type: [String], required: false },
-    genre: { type: [String], required: true },
+    avis: { type: [String], required: false, default:[] },
+    genres: { type: [String], required: true },
     imageUrl: { type: String, required: true }
 });
 
