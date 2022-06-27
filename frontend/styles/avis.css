@@ -1,0 +1,23 @@
+#app {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    margin-top: 30px;
+}
+  
+label {
+    margin-bottom:20px;
+    font-size: 1.2em;
+}
+
+textarea {
+    height:120px;
+}
+
+button {
+    width: 70px;
+    margin: auto;
+    margin-top: 20px;
+}

@@ -21,9 +21,9 @@ module.exports = (req, res, next) => {
     const schema = {
         type: "object",
         properties: {
-            titre: { type: "string" },
-            realisateur: { type: "string" },
-            description: { type: "string" },
+            titre: { type: "string" , minLength: 1},
+            realisateur: { type: "string" , minLength: 1 },
+            description: { type: "string" , minLength: 1 },
             date: { type: "string", format: "date" },
             genres: {
                 type: "array",
@@ -44,17 +44,17 @@ module.exports = (req, res, next) => {
     if (valid){
         // Et on vérifie également si un fichier a bien été passé
         if (req.file){
-            console.log("Le test a été passé");
+            console.log("Ajv : le test a été passé");
             next();
         }
         else {
-            console.log("Test passé mais passé aucune image");
+            console.log("Ajv : test passé mais passé aucune image");
             res.status(400).json({message:"Vous n'avez passé aucune image"});
         }
 
     }
     else {
-        console.log("Le test n'a pas été passé");
+        console.log("Ajv : le test n'a pas été passé");
         // Si les données ne sont pas bonnes, on renvoie l'erreur ainsi que le schéma global
         const message = {
             message : "Les données passées ne sont pas au bon format. Pour Rappel il faut :",

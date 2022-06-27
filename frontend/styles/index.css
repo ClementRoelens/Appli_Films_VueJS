@@ -98,22 +98,26 @@ li {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 250px;
+    width: 33%;
     margin: auto;
     position: relative;
 }
 
 #centre {
-    width: 250px;
+    /* width: 250px; */
     margin: auto;
     position: relative;
+    display:flex;
+    justify-content: space-around;
 }
 
 #avis_et_likes {
-    position: absolute;
+    /* position: absolute;
     width: 50px;
     right: 300px;
-    top: 45px;
+    top: 45px; */
+    align-items:end;
+    right:30px;
     text-align: center;
 }
 
@@ -142,13 +146,19 @@ h1 {
     width: 250px;
 }
 
+#avis {
+    width: 80%;
+    border: solid white 1px;
+    border-radius:10px;
+    padding:15px;
+}
+
 h2 {
     font-weight: normal;
     margin-top: 0;
 }
 
-h1,
-h2 {
+h1 , h2 {
     text-align: center;
 }
 

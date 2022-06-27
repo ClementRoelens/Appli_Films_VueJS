@@ -175,7 +175,7 @@ exports.unFilm = (req, res, next) => {
             res.status(200).json(filmTransmis);
         })
         .catch(error => {
-            console.log(reqDate() + "Erreur de la récupération du film " + filmTransmis.titre + "\n" + error)
+            console.log(reqDate() + "Erreur de la récupération du film\n" + error)
             res.status(404).json(error);
         })
 };
@@ -185,6 +185,7 @@ exports.unFilm = (req, res, next) => {
 
 
 exports.ajouterFilm = (req, res, next) => {
+    console.log("Film controller genres : " + req.body.genres);
     // Les données sont d'abord passés par le validateur et par Multer
     const tempFilm = req.body;
     // Les genres sont espacés par des virgules dans un seul objet string, donc on va en faire une array
@@ -203,8 +204,6 @@ exports.ajouterFilm = (req, res, next) => {
         dislikes: 0,
         avis: []
     });
-
-    console.log("Fin de la fonction film à ajouter");
 
     filmTransmis.save()
         .then(film => {
@@ -248,7 +247,29 @@ exports.dislike = (req, res, next) => {
 };
 
 exports.ajouterAvis = (req, res, next) => {
-
+    console.log("Entrée dans filmController.ajouterAvis");
+    // On cherche le film pour trouver sa liste d'avis et la mettre à jour
+    Film.findOne({ _id: req.params.filmId })
+        .then(film => {
+            console.log("Film trouvé");
+            console.log("Film.avis : " + film.avis);
+            const newNoticeList = film.avis;
+            newNoticeList.push(req.params.noticeId)
+            console.log('Nouvel avis push');
+            Film.findOneAndUpdate(
+                { _id: req.params.filmId },
+                { avis: newNoticeList },
+                { new: true }
+            ).then(updatedFilm => {
+                console.log('Film mis à jour');
+                res.status(201).json(updatedFilm);
+            })
+                .catch(error => res.stauts(400).json(errpr));
+        })
+        .catch(error => {
+            console.log("Film non trouvé");
+            res.status(404).json(error)
+        });
 };
 
 //#endregion
@@ -256,16 +277,28 @@ exports.ajouterAvis = (req, res, next) => {
 
 
 exports.modifierFilm = (req, res, next) => {
-    Film.findOneAndUpdate(
-        { _id: req.params.id }, req.body)
-        .then(updatedFilm => {
-            console.log(reqDate() + "Succès de la de mise à jour du film d'id " + req.params.id + "");
-            res.status(200).json(formatDate(updatedFilm));
-        })
-        .catch(error => {
-            console.log(reqDate() + "Erreur dans la mise à jour film d'id " + req.params.id + "" + error + "");
-            res.status(400).json(error);
-        })
+    Film.findOne({_id:req.params.filmId})
+    .then(film=>{
+        console.log("Film à modifier : "+film.titre);
+        console.log("id de l'avis : "+req.params.avisId);
+        const index = film.avis.indexOf(req.params.avisId);
+        console.log("Index à supprimer : " + index);
+        let newNoticeList = film.avis;
+        newNoticeList.splice(index, 1);
+        console.log("Nouvelle liste : " + newNoticeList);
+        Film.findOneAndUpdate(
+            { _id: req.params.filmId },
+            { avis: newNoticeList },
+            { new: true })
+            .then(updatedFilm => {
+                console.log(reqDate() + "Succès de la de mise à jour du film d'id " + req.params.filmId);
+                res.status(200).json(updatedFilm);
+            })
+            .catch(error => {
+                console.log(reqDate() + "Erreur dans la mise à jour film d'id " + req.params.filmId + error);
+                res.status(400).json(error);
+            })
+    })
 };
 
 // cette requête n'est pas encore utilisée

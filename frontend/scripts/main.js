@@ -17,6 +17,7 @@ const app = Vue.createApp({
             likedIcon: "../icons/thumbup.png",
             dislikedIcon: "../icons/thumbdown.png",
             avis: [],
+            avisIndex: 0,
             films: [],
             // Ces genres sont utilisés pour construire la liste des genres en utilisant un v-for.
             // La propriété "active" est utilisée pour montrer à quel genre le film sélectionné appartient
@@ -113,7 +114,7 @@ const app = Vue.createApp({
             // Par défaut, elle récupère au hasard 25 films de la liste sans aucun filtre
             const myInit = { method: "GET" };
             const requeteUrl = this.Url + "film/" + type + paramUrl;
-            console.log("recupererFilms URL : "+requeteUrl);
+            console.log("recupererFilms URL : " + requeteUrl);
             fetch(requeteUrl, myInit)
                 .then(res => res.json()
                     .then(films => {
@@ -228,7 +229,9 @@ const app = Vue.createApp({
             }
         },
         ajouterAvis() {
-
+            // Il faut utiliser une autre méthode ensuite
+            localStorage.setItem("avisEnCours", this.filmId);
+            window.location.href = './avis.html';
         },
 
         // Affichage et autre
@@ -242,7 +245,28 @@ const app = Vue.createApp({
             this.path = this.Url + film.imageUrl;
             this.likes = film.likes;
             this.dislikes = film.dislikes;
-            this.avis = film.avis;
+            let i = 0;
+            film.avis.forEach(avisId => {
+                fetch(this.Url + "avis/par_id/" + avisId)
+                    .then(res => res.json().
+                        then(avisRecu => {
+                            this.avis.push(avisRecu);
+                            i++;
+                            // Les avis les plus likés vont être présentés en premier
+                            // On les trie une fois que tous les avis ont été ajoutés
+                            if (film.avis.length > 1 && i == film.avis.length) {
+                                avis.sort((a, b) => {
+                                    return a.likes - b.likes;
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.log("Erreur lors de la réception de l'avis " + avisId);
+                            console.log(error);
+                        }))
+            });
+
+            this.avisIndex = 0;
             // Les genres auxquels le film appartient seront dégrisés
             this.genres.forEach(genre => {
                 genre.active = film.genres.includes(genre.nom) ? true : false;
@@ -280,17 +304,24 @@ const app = Vue.createApp({
     created() {
         // Tout d'abord, on cherche si l'utilisateur est authentifié
         this.token = localStorage.getItem("jwt");
-        if (this.token && (this.token != "undefined")) {
-            // Puisque l'utilisateur est authentifié, on affiche toutes ses infos
-            this.isLogged = true;
-            this.userId = localStorage.getItem("id");
-            this.pseudo = localStorage.getItem("pseudo");
-            this.isAdmin = localStorage.getItem("isAdmin");
-            this.likedFilmsId = JSON.parse(localStorage.getItem("likedFilmsId"));
-            this.dislikedFilmsId = JSON.parse(localStorage.getItem("dislikedFilmsId"));
-            this.noticesFilmsId = JSON.parse(localStorage.getItem("noticesFilmsId"));
-            this.likedNoticesId = JSON.parse(localStorage.getItem("likedNoticesId"));
-        };
+        try {
+            if (this.token && (this.token != "undefined")) {
+                // Puisque l'utilisateur est authentifié, on affiche toutes ses infos
+                // Au cas où une donnée serait corrompue...
+                this.isLogged = true;
+                this.userId = localStorage.getItem("id");
+                this.pseudo = localStorage.getItem("pseudo");
+                this.isAdmin = localStorage.getItem("isAdmin");
+                this.likedFilmsId = JSON.parse(localStorage.getItem("likedFilmsId"));
+                this.dislikedFilmsId = JSON.parse(localStorage.getItem("dislikedFilmsId"));
+                this.noticesFilmsId = JSON.parse(localStorage.getItem("noticesFilmsId"));
+                this.likedNoticesId = JSON.parse(localStorage.getItem("likedNoticesId"));
+            };
+        }
+        catch (error) {
+            console.log(error);
+            this.deconnexion();
+        }
         // On récupère 25 films au hasard pour peupler la partie gauche de l'appli, ce qui va automatiquement prendre un film au hasard pour l'afficher
         this.recupererFilms();
     }
@@ -299,13 +330,12 @@ const app = Vue.createApp({
 
 //TO DO
 
-//Contrôler que les champs ne soient pas undefined dans les requêtes du backend
+// Gérer dans la page de connexion les cas de mdp incorrect...
+// Gérer l'expiration du JWT
 
-// Créer un middleware d'authentification admin ? 
+// Créer un middleware d'authentification admin ?
 
-//Paramétrer la page d'accueil : si id, afficher celle-là
 //Et voir s'il est possible de passer un paramètre à la page d'accueil : l'id, un message, etc
-//Validation des données dans le controller backend
 //
 //Ajouter un genre préféré pour un user?
 

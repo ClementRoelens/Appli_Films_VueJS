@@ -60,6 +60,7 @@ const app = Vue.createApp({
                         formData.append('file', image)
                         // Maintenant que toutes les données ont été rajoutés et sont valides, on confirme leur validité et n'affiche pas le message les demandant
                         isValide = true;
+                        this.realisateur = '';
                         // Puis on envoie la requête
                         fetch(this.Url + "ajout",
                             {

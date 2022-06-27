@@ -20,12 +20,12 @@ router.get('/par_id/:id', filmCtrl.unFilm);
 
 // Les autres
 // Il serait bien plus logique de d'abord valider, et d'ensuite si la requête est bonne d'ajouter l'image... Mais je n'ai pas encore trouvé comment
-router.post('/ajout', multer, validator, filmCtrl.ajouterFilm);
+router.post('/ajout', multer, filmCtrl.ajouterFilm);
 router.post('/like/:id', auth, filmCtrl.like);
 router.post('/dislike/:id', auth , filmCtrl.dislike);
-router.post('/avis/:id', auth, filmCtrl.ajouterAvis);
+router.post('/addNotice/:filmId/:noticeId', auth, filmCtrl.ajouterAvis);
 
-router.put('/:id', multer, filmCtrl.modifierFilm);
+router.put('/:filmId/:avisId', filmCtrl.modifierFilm);
 
 // router.delete('/:id',filmCtrl.supprimer);
 module.exports = router;
