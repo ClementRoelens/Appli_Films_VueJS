@@ -6,8 +6,8 @@ const app = Vue.createApp({
 
             // Variables des films
             filmId: "",
-            titre: "",
-            realisateur: "",
+            title: "",
+            director: "",
             date: "",
             description: "",
             // genre:[],
@@ -16,8 +16,8 @@ const app = Vue.createApp({
             dislikes: 0,
             likedIcon: "../icons/thumbup.png",
             dislikedIcon: "../icons/thumbdown.png",
-            avis: [],
-            avisIndex: 0,
+            opinions: [],
+            opinionIndex: 0,
             films: [],
             // Ces genres sont utilisés pour construire la liste des genres en utilisant un v-for.
             // La propriété "active" est utilisée pour montrer à quel genre le film sélectionné appartient
@@ -82,9 +82,9 @@ const app = Vue.createApp({
             likedFilmsId: [],
             dislikedFilmsId: [],
             // En plus d'une expression de faveur ou de défaveur, l'utilisateur peut également rédiger un avis sur un film
-            noticesFilmsId: [],
+            opinionsId: [],
             // L'utilisateur peut également aimer un avis
-            likedNoticesId: [],
+            likedOpinionsId: [],
             token: null
         };
     },
@@ -228,45 +228,45 @@ const app = Vue.createApp({
                 alert("Connectez-vous pour effectuer cette action");
             }
         },
-        ajouterAvis() {
+        addOpinion() {
             // Il faut utiliser une autre méthode ensuite
-            localStorage.setItem("avisEnCours", this.filmId);
-            window.location.href = './avis.html';
+            localStorage.setItem("tempOpinionId", this.filmId);
+            window.location.href = './opinion.html';
         },
 
         // Affichage et autre
         assignationFilm(film) {
             // Quand un film est sélectionné ou mis à jour, on appelle cette fonction pour afficher les différentes infos
             this.filmId = film._id;
-            this.titre = film.titre;
-            this.realisateur = film.realisateur;
+            this.title = film.title;
+            this.director = film.director;
             this.date = film.date;
             this.description = film.description;
             this.path = this.Url + film.imageUrl;
             this.likes = film.likes;
             this.dislikes = film.dislikes;
             let i = 0;
-            film.avis.forEach(avisId => {
-                fetch(this.Url + "avis/par_id/" + avisId)
+            film.opinionsId.forEach(opinionId => {
+                fetch(this.Url + "opinion/getOneOpinion/" + opinionId)
                     .then(res => res.json().
-                        then(avisRecu => {
-                            this.avis.push(avisRecu);
+                        then(receivedOpinion => {
+                            this.opinions.push(receivedOpinion);
                             i++;
                             // Les avis les plus likés vont être présentés en premier
                             // On les trie une fois que tous les avis ont été ajoutés
-                            if (film.avis.length > 1 && i == film.avis.length) {
-                                avis.sort((a, b) => {
+                            if (film.opinions.length > 1 && i == film.opinions.length) {
+                                opinions.sort((a, b) => {
                                     return a.likes - b.likes;
                                 });
                             }
                         })
                         .catch(error => {
-                            console.log("Erreur lors de la réception de l'avis " + avisId);
+                            console.log("Erreur lors de la réception de l'avis " + opinionId);
                             console.log(error);
                         }))
             });
 
-            this.avisIndex = 0;
+            this.opinionIndex = 0;
             // Les genres auxquels le film appartient seront dégrisés
             this.genres.forEach(genre => {
                 genre.active = film.genres.includes(genre.nom) ? true : false;
@@ -295,8 +295,8 @@ const app = Vue.createApp({
             this.isAdmin = false;
             this.likedFilmsId = [];
             this.dislikedFilmsId = [];
-            this.noticesFilmsId = [];
-            this.likedNoticesId = [];
+            this.opinionsId = [];
+            this.likedOpinionsId = [];
             // Puis on actualise la page
             window.location.reload();
         }
@@ -314,8 +314,8 @@ const app = Vue.createApp({
                 this.isAdmin = localStorage.getItem("isAdmin");
                 this.likedFilmsId = JSON.parse(localStorage.getItem("likedFilmsId"));
                 this.dislikedFilmsId = JSON.parse(localStorage.getItem("dislikedFilmsId"));
-                this.noticesFilmsId = JSON.parse(localStorage.getItem("noticesFilmsId"));
-                this.likedNoticesId = JSON.parse(localStorage.getItem("likedNoticesId"));
+                this.opinionsId = JSON.parse(localStorage.getItem("opinionsId"));
+                this.likedOpinionsId = JSON.parse(localStorage.getItem("likedOpinionsId"));
             };
         }
         catch (error) {
