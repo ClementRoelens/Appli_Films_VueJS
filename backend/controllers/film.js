@@ -4,30 +4,30 @@ const config = require("config");
 const genres = config.get("Genres");
 
 // Fonction prenant un tableau de films pour en retourner 20 au hasard
-const recupNfilms = (films) => {
-    let filmsTransmis = [];
+const getNfilms = (films) => {
+    let transmittedFilm = [];
     // On va créer une nouvelle Array de maximum 20 films pris au hasard (ou moins s'il n'y a pas 20 films)
     for (i = 0, lim = films.length; (i < 20) && (i < lim); i++) {
         const rand = Math.floor(Math.random() * films.length);
-        filmsTransmis.push(films[rand]);
+        transmittedFilm.push(films[rand]);
         films = films.slice(0, rand).concat(films.slice(rand + 1));
     }
-    return filmsTransmis;
+    return transmittedFilm;
 };
 // Fonction permettant l'affichage de la date et de l'heure
 const reqDate = () => {
-    const dateBrute = new Date();
-    const jour = dateBrute.toLocaleDateString();
-    const heure = dateBrute.toLocaleTimeString();
+    const rawDate = new Date();
+    const day = rawDate.toLocaleDateString();
+    const hour = rawDate.toLocaleTimeString();
 
-    return jour + " : " + heure + " - ";
+    return day + " : " + hour + " - ";
 };
 // Fonction permettant d'appliquer le bon format aux dates envoyées par MongoDB
-const formatDate = (filmBrut) => {
-    const filmAuBonFormat = filmBrut.toJSON();
-    filmAuBonFormat.date = filmAuBonFormat.date.toLocaleDateString();
+const formatDate = (rawFilm) => {
+    const formattedFilm = rawFilm.toJSON();
+    formattedFilm.date = formattedFilm.date.toLocaleDateString();
 
-    return filmAuBonFormat;
+    return formattedFilm;
 };
 
 
@@ -35,12 +35,12 @@ const formatDate = (filmBrut) => {
 //#region Récupérer tous les films
 
 
-exports.tousLesFilms = (req, res, next) => {
+exports.getAllFilms = (req, res, next) => {
     Film.find()
         .then(films => {
-            const filmsAtransmettre = films.map(formatDate);
-            console.log(reqDate() + "Succès de la récupération de tous les films.Nombre de films récupérés : " + filmsAtransmettre.length);
-            res.status(200).json(filmsAtransmettre);
+            const filmsToSend = films.map(formatDate);
+            console.log(reqDate() + "Succès de la récupération de tous les films.Nombre de films récupérés : " + filmsToSend.length);
+            res.status(200).json(filmsToSend);
         })
         .catch((error) => {
             console.log(reqDate() + "Erreur dans la récupération de tous les films\n" + error);
@@ -48,30 +48,30 @@ exports.tousLesFilms = (req, res, next) => {
         })
 };
 
-exports.tousLesFilmsParGenre = (req, res, next) => {
-    const genreAchercher = req.params.genre;
-    Film.find({ genres: genreAchercher })
+exports.getAllInOneGenre = (req, res, next) => {
+    const seekedGenre = req.params.genre;
+    Film.find({ genres: seekedGenre })
         .then(films => {
-            const filmsAtransmettre = films.map(formatDate);
-            console.log(reqDate() + "Succès de la récupération de tous les films du genre " + genreAchercher + "Nombre de films récupérés : " + filmsAtransmettre.length);
-            res.status(200).json(filmsAtransmettre);
+            const filmsToSend = films.map(formatDate);
+            console.log(reqDate() + "Succès de la récupération de tous les films du genre " + seekedGenre + "Nombre de films récupérés : " + filmsToSend.length);
+            res.status(200).json(filmsToSend);
         })
         .catch(error => {
-            console.log(reqDate() + "Erreur dans la récupération de tous les films du genre " + genreAchercher + "\n" + error);
+            console.log(reqDate() + "Erreur dans la récupération de tous les films du genre " + seekedGenre + "\n" + error);
             res.status(404).json(error);
         });
 };
 
-exports.tousLesFilmsParReal = (req, res, next) => {
-    const real = req.params.real;
-    Film.find({ realisateur: real })
+exports.getAllInOneDirector = (req, res, next) => {
+    const seekedDirector = req.params.director;
+    Film.find({ director: seekedDirector })
         .then(films => {
-            const filmsAtransmettre = films.map(formatDate);
-            console.log(reqDate() + "Succès de la récupération de tous les films réalisés par " + real + "Nombre de films récupérés : " + filmsAtransmettre.length);
-            res.status(200).json(filmsAtransmettre);
+            const filmsToSend = films.map(formatDate);
+            console.log(reqDate() + "Succès de la récupération de tous les films réalisés par " + seekedDirector + "Nombre de films récupérés : " + filmsToSend.length);
+            res.status(200).json(filmsToSend);
         })
         .catch(error => {
-            console.log(reqDate() + "Erreur dans la récupération de tous les films réalisés par " + real + "\n" + error);
+            console.log(reqDate() + "Erreur dans la récupération de tous les films réalisés par " + seekedDirector + "\n" + error);
             res.status(404).json(error);
         })
 };
@@ -82,13 +82,13 @@ exports.tousLesFilmsParReal = (req, res, next) => {
 
 //#region N Films au hasard
 
-exports.filmsAuHasard = (req, res, next) => {
+exports.getRandomFilms = (req, res, next) => {
     Film.find()
         .then(films => {
-            let filmsAtransmettre = films.map(formatDate);
-            const filmsTransmis = recupNfilms(filmsAtransmettre);
+            let filmsToSend = films.map(formatDate);
+            const sentFilms = getNfilms(filmsToSend);
             console.log(reqDate() + "Succès de la récupération de 20 films au hasard");
-            res.status(200).json(filmsTransmis);
+            res.status(200).json(sentFilms);
         })
         .catch((error) => {
             console.log(reqDate() + "Erreur dans la récupération de films au hasard : \n" + error);
@@ -96,45 +96,45 @@ exports.filmsAuHasard = (req, res, next) => {
         });
 };
 
-exports.filmsAuHasardParGenre = (req, res, next) => {
+exports.getRandomInOneGenre = (req, res, next) => {
     console.log("Le genre cherché est " + req.params.genre);
-    const genreAchercher = req.params.genre;
-    Film.find({ genres: genreAchercher })
+    const seekedGenre = req.params.genre;
+    Film.find({ genres: seekedGenre })
         .then(films => {
-            const filmsAtransmettre = films.map(formatDate);
-            const filmsTransmis = recupNfilms(filmsAtransmettre);
-            console.log(reqDate() + "Succès de la récupération de 20 films du genre " + genreAchercher + " au hasard");
-            res.status(200).json(filmsTransmis);
+            const filmsToSend = films.map(formatDate);
+            const sentFilms = getNfilms(filmsToSend);
+            console.log(reqDate() + "Succès de la récupération de 20 films du genre " + seekedGenre + " au hasard");
+            res.status(200).json(sentFilms);
         })
         .catch((error) => {
-            console.log(reqDate() + "Erreur dans la récupération de films de " + genreAchercher + " au hasard\n" + error);
+            console.log(reqDate() + "Erreur dans la récupération de films de " + seekedGenre + " au hasard\n" + error);
             res.status(404).json(error);
         });
 
 };
 
-exports.filmsAuHasardParReal = (req, res, next) => {
-    const real = req.params.real;
-    Film.find({ realisateur: real })
+exports.getRandomInOneDirector = (req, res, next) => {
+    const seekedDirector = req.params.director;
+    Film.find({ director: seekedDirector })
         .then(films => {
-            const filmsAtransmettre = films.map(formatDate);
-            const filmsTransmis = recupNfilms(filmsAtransmettre);
-            console.log(reqDate() + "Succès de la récupération de 20 films réalisés par " + real + " au hasard");
-            res.status(200).json(filmsTransmis);
+            const filmsToSend = films.map(formatDate);
+            const sentFilms = getNfilms(filmsToSend);
+            console.log(reqDate() + "Succès de la récupération de 20 films réalisés par " + seekedDirector + " au hasard");
+            res.status(200).json(sentFilms);
         })
         .catch((error) => {
-            console.log(reqDate() + "Erreur dans la récupération de films de " + real + " au hasard\n" + error);
+            console.log(reqDate() + "Erreur dans la récupération de films de " + seekedDirector + " au hasard\n" + error);
             res.status(404).json(error);
         });
 };
 
-exports.unFilmAuHasard = (req, res, next) => {
+exports.getOneRandom = (req, res, next) => {
     Film.find()
         .then(films => {
             const rand = Math.round(Math.random() * (films.length - 1));
-            const filmTransmis = formatDate(films[rand]);
-            console.log(reqDate() + "Succès de la récupération de " + filmTransmis.titre + " au hasard")
-            res.status(200).json(filmTransmis);
+            const sentFilm = formatDate(films[rand]);
+            console.log(reqDate() + "Succès de la récupération de " + sentFilm.title + " au hasard")
+            res.status(200).json(sentFilm);
         })
         .catch((error) => {
             console.log(reqDate() + "Erreur dans la récupération d'un film au hasard\n" + error);
@@ -148,17 +148,17 @@ exports.unFilmAuHasard = (req, res, next) => {
 //     const genresDeTri = req.query.genre;
 //     Film.find()
 //         .then(films => {
-//             const filmsTransmis = [];
+//             const sentFilms = [];
 //             films.forEach(filmAtrier => {
 //                 const genresAtrier = filmAtrier.genre;
 //                 // Le test est true si au moins un des genres du film itéré est contenu dans l'array des genres cherchés
 //                 const test = genresAtrier.some(genre => genresDeTri.includes(genre));
 //                 // Si le test est bon, on ajoute ce film à la liste des films qu'on va retourner
 //                 if (test){
-//                     filmsTransmis.push(filmAtrier);
+//                     sentFilms.push(filmAtrier);
 //                 }
 //             });
-//             res.status(200).json(filmsTransmis);
+//             res.status(200).json(sentFilms);
 //         })
 //         .catch()
 
@@ -167,12 +167,12 @@ exports.unFilmAuHasard = (req, res, next) => {
 //#endregion
 
 
-exports.unFilm = (req, res, next) => {
+exports.getOneFilm = (req, res, next) => {
     Film.findOne({ _id: req.params.id })
-        .then(filmBrut => {
-            const filmTransmis = formatDate(filmBrut);
-            console.log(reqDate() + "Succès de la récupération du film " + filmTransmis.titre);
-            res.status(200).json(filmTransmis);
+        .then(rawFilm => {
+            const sentFilm = formatDate(rawFilm);
+            console.log(reqDate() + "Succès de la récupération du film " + sentFilm.title);
+            res.status(200).json(sentFilm);
         })
         .catch(error => {
             console.log(reqDate() + "Erreur de la récupération du film\n" + error)
@@ -184,16 +184,16 @@ exports.unFilm = (req, res, next) => {
 //#region Post
 
 
-exports.ajouterFilm = (req, res, next) => {
+exports.addOneFilm = (req, res, next) => {
     console.log("Film controller genres : " + req.body.genres);
     // Les données sont d'abord passés par le validateur et par Multer
     const tempFilm = req.body;
     // Les genres sont espacés par des virgules dans un seul objet string, donc on va en faire une array
     const genresArray = tempFilm.genres.split(",");
     console.log('Film controller : genres :' + genresArray);
-    const filmTransmis = new Film({
-        titre: tempFilm.titre,
-        realisateur: tempFilm.realisateur,
+    const sentFilm = new Film({
+        title: tempFilm.title,
+        director: tempFilm.director,
         description: tempFilm.description,
         date: tempFilm.date,
         genres: genresArray,
@@ -202,16 +202,16 @@ exports.ajouterFilm = (req, res, next) => {
         // On ajoute également les likes, dislikes et avis vierges
         likes: 0,
         dislikes: 0,
-        avis: []
+        opinionsId: []
     });
 
-    filmTransmis.save()
+    sentFilm.save()
         .then(film => {
-            console.log(reqDate() + "Succès de l'ajout de " + filmTransmis.titre);
+            console.log(reqDate() + "Succès de l'ajout de " + sentFilm.title);
             res.status(201).json(formatDate(film));
         })
         .catch(error => {
-            console.log(reqDate() + "Erreur dans l'ajout de " + filmTransmis.titre + "\n" + error)
+            console.log(reqDate() + "Erreur dans l'ajout de " + sentFilm.title + "\n" + error)
             res.status(400).json(error);
         });
 };
@@ -224,7 +224,7 @@ exports.like = (req, res, next) => {
         { likes: req.body.likes + req.body.operation },
         { new: true }
     ).then(updatedFilm => {
-        console.log(reqDate() + "Succès de l'ajout d'un like à " + updatedFilm.titre + " les portant à " + updatedFilm.likes);
+        console.log(reqDate() + "Succès de l'ajout d'un like à " + updatedFilm.title + " les portant à " + updatedFilm.likes);
         res.status(201).json(formatDate(updatedFilm));
     }).catch(error => {
         console.log(reqDate() + "Erreur dans l'ajout d'un like au film d'id " + req.params.id + "\n" + error);
@@ -238,7 +238,7 @@ exports.dislike = (req, res, next) => {
         { dislikes: req.body.dislikes + req.body.operation },
         { new: true }
     ).then(updatedFilm => {
-        console.log(reqDate() + "Succès de l'ajout d'un dislike à " + updatedFilm.titre + " les portant à " + updatedFilm.dislikes);
+        console.log(reqDate() + "Succès de l'ajout d'un dislike à " + updatedFilm.title + " les portant à " + updatedFilm.dislikes);
         res.status(201).json(formatDate(updatedFilm));
     }).catch(error => {
         console.log(reqDate() + "Erreur dans l'ajout d'un dislike au film d'id " + req.params.id + "\n" + error);
@@ -246,49 +246,61 @@ exports.dislike = (req, res, next) => {
     });
 };
 
-exports.ajouterAvis = (req, res, next) => {
-    console.log("Entrée dans filmController.ajouterAvis");
-    // On cherche le film pour trouver sa liste d'avis et la mettre à jour
-    Film.findOne({ _id: req.params.filmId })
-        .then(film => {
-            console.log("Film trouvé");
-            console.log("Film.avis : " + film.avis);
-            const newNoticeList = film.avis;
-            newNoticeList.push(req.params.noticeId)
-            console.log('Nouvel avis push');
-            Film.findOneAndUpdate(
-                { _id: req.params.filmId },
-                { avis: newNoticeList },
-                { new: true }
-            ).then(updatedFilm => {
-                console.log('Film mis à jour');
-                res.status(201).json(updatedFilm);
-            })
-                .catch(error => res.stauts(400).json(errpr));
-        })
-        .catch(error => {
-            console.log("Film non trouvé");
-            res.status(404).json(error)
-        });
-};
+// exports.addOpinion = (req, res, next) => {
+//     console.log("Entrée dans filmController.ajouterAvis");
+//     // On cherche le film pour trouver sa liste d'avis et la mettre à jour
+//     Film.findOne({ _id: req.params.filmId })
+//         .then(film => {
+//             console.log("Film trouvé");
+//             console.log("Film.avis : " + film.opinionsId);
+//             const newOpinionsList = film.opinionsId;
+//             newOpinionsList.push(req.params.opinionId)
+//             console.log('Nouvel avis push');
+//             Film.findOneAndUpdate(
+//                 { _id: req.params.filmId },
+//                 { opinionsId: newOpinionsList },
+//                 { new: true }
+//             ).then(updatedFilm => {
+//                 console.log('Film mis à jour');
+//                 res.status(201).json(updatedFilm);
+//             })
+//                 .catch(error => res.stauts(400).json(errpr));
+//         })
+//         .catch(error => {
+//             console.log("Film non trouvé");
+//             res.status(404).json(error)
+//         });
+// };
 
 //#endregion
 
 
+// cette requête n'est pas encore utilisée
+// exports.supprimer = (req, res, next) => {
+//     film.deleteOne({ _id: req.params.id })
+//         .then(() => {
 
-exports.modifierFilm = (req, res, next) => {
+//             res.status(200).json({ message: req.params.title + ' supprimé ' })
+//         })
+//         .catch(error => res.status(400).json({ error }));
+// };
+
+
+// Uniquement pour le développement
+
+exports.modifyFilm = (req, res, next) => {
     Film.findOne({_id:req.params.filmId})
     .then(film=>{
-        console.log("Film à modifier : "+film.titre);
-        console.log("id de l'avis : "+req.params.avisId);
-        const index = film.avis.indexOf(req.params.avisId);
+        console.log("Film à modifier : "+film.title);
+        console.log("id de l'avis : "+req.params.opinionId);
+        const index = film.avis.indexOf(req.params.opinionId);
         console.log("Index à supprimer : " + index);
-        let newNoticeList = film.avis;
-        newNoticeList.splice(index, 1);
-        console.log("Nouvelle liste : " + newNoticeList);
+        let newOpinionsList = film.opinionsId;
+        newOpinionsList.splice(index, 1);
+        console.log("Nouvelle liste : " + newOpinionsList);
         Film.findOneAndUpdate(
             { _id: req.params.filmId },
-            { avis: newNoticeList },
+            { opinionsId: newOpinionsList },
             { new: true })
             .then(updatedFilm => {
                 console.log(reqDate() + "Succès de la de mise à jour du film d'id " + req.params.filmId);
@@ -300,17 +312,4 @@ exports.modifierFilm = (req, res, next) => {
             })
     })
 };
-
-// cette requête n'est pas encore utilisée
-// exports.supprimer = (req, res, next) => {
-//     film.deleteOne({ _id: req.params.id })
-//         .then(() => {
-
-//             res.status(200).json({ message: req.params.titre + ' supprimé ' })
-//         })
-//         .catch(error => res.status(400).json({ error }));
-// };
-
-
-//Test
 

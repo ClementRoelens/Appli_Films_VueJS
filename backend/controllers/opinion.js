@@ -1,18 +1,16 @@
-const Avis = require('../models/avis');
+const Opinion = require('../models/opinion');
 
-exports.ajout = (req, res, next) => {
+exports.addOneOpinion = (req, res, next) => {
     console.log("Entrée dans controllerAvis.ajout");
-    const newAvis = new Avis({
-        filmId: req.body.filmId,
-        userId: req.body.userId,
-        contenu: req.body.contenu,
+    const newOpinion = new Opinion({
+        content: req.body.content,
         likes: 0
     });
 
-    newAvis.save()
-        .then(avis => {
+    newOpinion.save()
+        .then(opinion => {
             console.log("Avis ajouté!");
-            res.status(201).json(avis);
+            res.status(201).json(opinion);
         })
         .catch(error => {
             console.log(error);
@@ -20,10 +18,10 @@ exports.ajout = (req, res, next) => {
         });
 };
 
-exports.recevoirUnAvis = (req, res, next) => {
-    Avis.findOne({ _id: req.params.id })
-        .then(avis => {
-            res.status(200).json(avis);
+exports.getOneOpinion = (req, res, next) => {
+    Opinion.findOne({ _id: req.params.id })
+        .then(opinion => {
+            res.status(200).json(opinion);
         })
         .catch(error => {
             console.log("L'avis n'a pas été trouvé");
@@ -31,12 +29,12 @@ exports.recevoirUnAvis = (req, res, next) => {
         });
 };
 
-exports.tousLesAvisDunFilm = (req, res, next) => {
-    Avis.find({ filmId: req.params.filmId })
-        .then(avis => {
-            if (avis.length > 0) {
-                console.log("Avis trouvés : " + avis);
-                res.status(200).json(avis);
+exports.getAllOpinionsInOneFilm = (req, res, next) => {
+    Opinion.find({ filmId: req.params.filmId })
+        .then(opinion => {
+            if (opinion.length > 0) {
+                console.log("Avis trouvés : " + opinion);
+                res.status(200).json(opinion);
             }
             else {
                 console.log("Aucun avis n'a été écrit");
