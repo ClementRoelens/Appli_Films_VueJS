@@ -16,8 +16,8 @@ const app = Vue.createApp({
                 'Thriller',
                 'Western'
             ],
-            titre: "",
-            realisateur: "",
+            title: "",
+            director: "",
             description: "",
             date: ""
         };
@@ -35,9 +35,9 @@ const app = Vue.createApp({
             // On crée un objet FormData qui contiendra nos données et notre image
             const formData = new FormData();
             // Et on ajoute les premiers champs si ceux-ci ont été remplis
-            if (this.titre && this.realisateur && this.description && this.date) {
-                formData.append("titre", this.titre);
-                formData.append("realisateur", this.realisateur);
+            if (this.title && this.director && this.description && this.date) {
+                formData.append("title", this.title);
+                formData.append("director", this.director);
                 formData.append("description", this.description);
                 formData.append("date", this.date);
 
@@ -60,9 +60,9 @@ const app = Vue.createApp({
                         formData.append('file', image)
                         // Maintenant que toutes les données ont été rajoutés et sont valides, on confirme leur validité et n'affiche pas le message les demandant
                         isValide = true;
-                        this.realisateur = '';
+                        this.director = '';
                         // Puis on envoie la requête
-                        fetch(this.Url + "ajout",
+                        fetch(this.Url + "addOneFilm",
                             {
                                 body: formData,
                                 method: "POST"

@@ -3,7 +3,7 @@ div#app {
     flex-direction: column;
 }
 
-#ajout {
+#add {
     position: absolute;
     top: 10px;
     right: 60px;
@@ -19,12 +19,12 @@ button {
     cursor: pointer;
 }
 
-#authentification {
+#signin {
     display: flex;
     justify-content: space-between;
 }
 
-#compte {
+#account {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -38,7 +38,7 @@ button {
     background-color: rgb(76 88 102);
 }
 
-#compte button {
+#account button {
     margin: auto;
     border-radius: 30px;
     height: 45px;
@@ -46,32 +46,32 @@ button {
     padding: 0;
 }
 
-#compte div div {
+#account div div {
     margin-top: 5px;
     font-size:0.8em;
 }
 
-#compte h2 {
+#account h2 {
     margin-top: 12px;
     margin-bottom: 0px;
     font-size: 2.1em;
 }
 
-#rightCompte {
+#account_right {
     width: 110px;
 }
 
 
-#contenu {
+#content {
     display: flex;
     margin-top: 15px;
 }
 
-#gauche , #genres {
+#left , #genres {
     width: 20%;
 }
 
-#gauche {
+#left {
     margin-left: 40px;
 }
 
@@ -94,7 +94,7 @@ li {
     margin-top: 20px;
 }
 
-#centre>* {
+#center>* {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -103,7 +103,7 @@ li {
     position: relative;
 }
 
-#centre {
+#center {
     /* width: 250px; */
     margin: auto;
     position: relative;
@@ -111,7 +111,7 @@ li {
     justify-content: space-around;
 }
 
-#avis_et_likes {
+#opinions_and_likes {
     /* position: absolute;
     width: 50px;
     right: 300px;
@@ -121,15 +121,15 @@ li {
     text-align: center;
 }
 
-#avis_et_likes>* {
+#opinions_and_likes>* {
     margin-top: 25px;
 }
 
-#avis_et_likes>*>* {
+#opinions_and_likes>*>* {
     margin-top: 5px;
 }
 
-#avis_et_likes .icons {
+#opinions_and_likes .icons {
     width: 30px;
     cursor: pointer;
 }
@@ -140,13 +140,13 @@ h1 {
     margin: 0 auto 0 auto;
 }
 
-#affiche {
+#poster {
     margin-top: 30px;
     margin-bottom: 25px;
     width: 250px;
 }
 
-#avis {
+#opinion {
     width: 80%;
     border: solid white 1px;
     border-radius:10px;
@@ -162,11 +162,11 @@ h1 , h2 {
     text-align: center;
 }
 
-#real {
+#director {
     font-size: 1.7em;
 }
 
-#real:hover {
+#director:hover {
     cursor: pointer;
     text-decoration: underline;
 }
@@ -175,7 +175,7 @@ h1 , h2 {
     font-size: 1.4em;
 }
 
-#synopsis {
+#description {
     width: 80%;
     margin: auto;
     margin-top: 30px;
@@ -205,6 +205,6 @@ h3 {
     color: rgb(95, 95, 95)
 }
 
-.genresActif {
+.activeGenres {
     color: white;
 }

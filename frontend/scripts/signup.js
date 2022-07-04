@@ -2,14 +2,14 @@ const app = Vue.createApp({
     data() {
         return {
             Url: 'http://localhost:3000/',
-            pseudo: '',
+            nickname: '',
             password: ''
         }
     },
     methods: {
         inscription() {
             const bodyReq = {
-                pseudo: this.pseudo,
+                nickname: this.nickname,
                 password: this.password
             };
             const myInit = {
@@ -17,7 +17,7 @@ const app = Vue.createApp({
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' }
             };
-            fetch(this.Url + "user/inscription", myInit)
+            fetch(this.Url + "user/signup", myInit)
                 .then(res => {
                     alert(res);
                     window.location.href = "./index.html";

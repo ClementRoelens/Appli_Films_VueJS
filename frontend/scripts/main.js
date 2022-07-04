@@ -23,58 +23,58 @@ const app = Vue.createApp({
             // La propriété "active" est utilisée pour montrer à quel genre le film sélectionné appartient
             genres: [
                 {
-                    "nom": "Action",
+                    "name": "Action",
                     "active": false
                 },
                 {
-                    "nom": "Aventure",
+                    "name": "Aventure",
                     "active": false
                 },
                 {
-                    "nom": "Comédie",
+                    "name": "Comédie",
                     "active": false
                 },
                 {
-                    "nom": "Drame",
+                    "name": "Drame",
                     "active": false
                 },
                 {
-                    "nom": "Fantasy",
+                    "name": "Fantasy",
                     "active": false
                 },
                 {
-                    "nom": "Guerre",
+                    "name": "Guerre",
                     "active": false
                 },
                 {
-                    "nom": "Historique",
+                    "name": "Historique",
                     "active": false
                 },
                 {
-                    "nom": "Horreur",
+                    "name": "Horreur",
                     "active": false
                 },
                 {
-                    "nom": "Romance",
+                    "name": "Romance",
                     "active": false
                 },
                 {
-                    "nom": "Science-fiction",
+                    "name": "Science-fiction",
                     "active": false
                 },
                 {
-                    "nom": "Thriller",
+                    "name": "Thriller",
                     "active": false
                 },
                 {
-                    "nom": "Western",
+                    "name": "Western",
                     "active": false
                 }
             ],
 
             // Variables des comptes
             userId: "",
-            pseudo: "visiteur",
+            nickname: "visiteur",
             isLogged: false,
             isAdmin: false,
             // Ces listes permettent de ne pas s'exprimer plusieurs fois sur un même film, et de retrouver le nombre d'opinions exprimées
@@ -90,9 +90,9 @@ const app = Vue.createApp({
     },
     methods: {
         // GET
-        recupérerTousLesFilms() {
+        getAllFilms() {
             const myInit = { method: "GET" };
-            fetch(this.Url + "film/", myInit)
+            fetch(this.Url + "film/getAllFilms", myInit)
                 .then(res => res.json()
                     .then(films => {
                         this.films = films;
@@ -103,26 +103,25 @@ const app = Vue.createApp({
         getOneFilm(id) {
             const myInit = { method: "GET" };
             // Si aucun id n'est passé, on récupérera un film au hasard
-            const reqUrl = id ? "film/par_id/" + id : "film/un_seul_au_hasard";
+            const reqUrl = id ? "film/getOneFilm/" + id : "film/getOneRandom";
             fetch(this.Url + reqUrl, myInit)
                 .then(res => res.json()
-                    .then(filmChoisi => this.assignationFilm(filmChoisi))
+                    .then(choosenFilm => this.filmAssignation(choosenFilm))
                 ).catch(error => console.log(error))
         },
-        recupererFilms(type = "au_hasard", paramUrl = "") {
+        getFilms(type = "getRandomFilms", paramUrl = "") {
             // Cette fonction récupère 25 films selon un critère ou non
             // Par défaut, elle récupère au hasard 25 films de la liste sans aucun filtre
             const myInit = { method: "GET" };
             const requeteUrl = this.Url + "film/" + type + paramUrl;
-            console.log("recupererFilms URL : " + requeteUrl);
             fetch(requeteUrl, myInit)
                 .then(res => res.json()
                     .then(films => {
                         this.films = films;
                         // Une fois les films récupérés et passés dans notre data, on en prend un au hasard pour l'assigner
                         const rand = Math.round(Math.random() * (films.length - 1));
-                        const filmChoisi = films[rand];
-                        this.assignationFilm(filmChoisi);
+                        const choosenFilm = films[rand];
+                        this.filmAssignation(choosenFilm);
                     }))
                 .catch(error => console.log(error))
         },
@@ -171,7 +170,7 @@ const app = Vue.createApp({
                                     .then(film => {
                                         console.log("Succès de la requête de mise à jour du film");
                                         // On appelle la fonction d'assignation pour mettre à jour le film maintenant modifié
-                                        this.assignationFilm(film);
+                                        this.filmAssignation(film);
                                     })).catch(error => console.log(error));
                         })).catch(error => console.log(error));
             }
@@ -217,7 +216,7 @@ const app = Vue.createApp({
                                 .then(res => res.json()
                                     .then(film => {
                                         console.log("Succès de la requête de mise à jour du film");
-                                        this.assignationFilm(film);
+                                        this.filmAssignation(film);
                                     })
                                 ).catch(error => console.log(error));
                         })
@@ -229,13 +228,12 @@ const app = Vue.createApp({
             }
         },
         addOpinion() {
-            // Il faut utiliser une autre méthode ensuite
             localStorage.setItem("tempOpinionId", this.filmId);
             window.location.href = './opinion.html';
         },
 
         // Affichage et autre
-        assignationFilm(film) {
+        filmAssignation(film) {
             // Quand un film est sélectionné ou mis à jour, on appelle cette fonction pour afficher les différentes infos
             this.filmId = film._id;
             this.title = film.title;
@@ -269,7 +267,7 @@ const app = Vue.createApp({
             this.opinionIndex = 0;
             // Les genres auxquels le film appartient seront dégrisés
             this.genres.forEach(genre => {
-                genre.active = film.genres.includes(genre.nom) ? true : false;
+                genre.active = film.genres.includes(genre.name) ? true : false;
             });
             // Si le film a déjà été liké par l'utilisateur, le pouce vers le haut apparaîtra bleu
             if (this.likedFilmsId.includes(this.filmId)) {
@@ -286,12 +284,12 @@ const app = Vue.createApp({
                 this.dislikedIcon = "../icons/thumbdown.png";
             }
         },
-        deconnexion() {
+        signout() {
             // L'utilisateur se déconnecte : on vide ses infos du localStorage et on redonne aux data leurs valeurs de base
             localStorage.clear();
             this.token = null;
             this.isLogged = false;
-            this.pseudo = "visiteur";
+            this.nickname = "visiteur";
             this.isAdmin = false;
             this.likedFilmsId = [];
             this.dislikedFilmsId = [];
@@ -310,7 +308,7 @@ const app = Vue.createApp({
                 // Au cas où une donnée serait corrompue...
                 this.isLogged = true;
                 this.userId = localStorage.getItem("id");
-                this.pseudo = localStorage.getItem("pseudo");
+                this.nickname = localStorage.getItem("nickname");
                 this.isAdmin = localStorage.getItem("isAdmin");
                 this.likedFilmsId = JSON.parse(localStorage.getItem("likedFilmsId"));
                 this.dislikedFilmsId = JSON.parse(localStorage.getItem("dislikedFilmsId"));
@@ -320,10 +318,10 @@ const app = Vue.createApp({
         }
         catch (error) {
             console.log(error);
-            this.deconnexion();
+            this.signout();
         }
         // On récupère 25 films au hasard pour peupler la partie gauche de l'appli, ce qui va automatiquement prendre un film au hasard pour l'afficher
-        this.recupererFilms();
+        this.getFilms();
     }
 }).mount("#app");
 

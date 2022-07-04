@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
 
-const film = mongoose.Schema({
-    title: { type: String, required: true },
-    director: { type: String, required: true },
+const ancienfilm = mongoose.Schema({
+    titre: { type: String, required: true },
+    realisateur: { type: String, required: true },
     description: { type: String, required: true },
     date: { type: Date, required: true },
     likes: { type: Number, required: true, default:[] },
     dislikes: { type: Number, required: true, default:[] },
-    opinionsId: { type: [String], required: false, default:[] },
+    avis: { type: [String], required: false, default:[] },
     genres: { type: [String], required: true },
     imageUrl: { type: String, required: true }
 });
 
 
-module.exports = mongoose.model('Film',film);
+module.exports = mongoose.model('Ancienfilm',ancienfilm);

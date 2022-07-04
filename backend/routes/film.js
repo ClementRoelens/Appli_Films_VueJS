@@ -31,7 +31,7 @@ router.post("/addOneFilm", multer, filmCtrl.addOneFilm);
 
 
 // Uniquement utilisé pour le développement
-router.put("/:filmId/:opinionId", filmCtrl.modifyFilm);
+router.put("/maj", filmCtrl.modifyFilm);
 
 
 module.exports = router;

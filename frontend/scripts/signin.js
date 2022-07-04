@@ -2,14 +2,14 @@ const app = Vue.createApp({
     data() {
         return {
             Url: 'http://localhost:3000/',
-            pseudo: '',
+            nickname: '',
             password: ''
         }
     },
     methods: {
         connexion() {
             const bodyReq = {
-                pseudo: this.pseudo,
+                nickname: this.nickname,
                 password: this.password
             };
             const myInit = {
@@ -17,7 +17,7 @@ const app = Vue.createApp({
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' }
             };
-            fetch(this.Url + "user/connexion", myInit)
+            fetch(this.Url + "user/signin", myInit)
                 .then(user => {
                     // Si les credentials sont corrects, on récupère le token ainsi que toutes les valeurs de l'utilisateur
                     user.json()
@@ -28,10 +28,10 @@ const app = Vue.createApp({
                             else {
                                 console.log('Then lancé');
                                 localStorage.setItem("id", res.userId);
-                                localStorage.setItem("pseudo", res.pseudo);
+                                localStorage.setItem("nickname", res.nickname);
                                 localStorage.setItem("likedFilmsId", JSON.stringify(res.likedFilmsId));
-                                localStorage.setItem("noticesFilmsId", JSON.stringify(res.noticesFilmsId));
-                                localStorage.setItem("likedNoticesId", JSON.stringify(res.likedNoticesId));
+                                localStorage.setItem("opinionsId", JSON.stringify(res.opinionsId));
+                                localStorage.setItem("likedOpinionssId", JSON.stringify(res.likedOpinionsId));
                                 localStorage.setItem("dislikedFilmsId", JSON.stringify(res.dislikedFilmsId));
                                 localStorage.setItem("isAdmin", res.isAdmin);
                                 localStorage.setItem("jwt", res.token);

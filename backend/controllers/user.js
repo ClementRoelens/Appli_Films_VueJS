@@ -8,7 +8,7 @@ exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
-                pseudo: req.body.pseudo,
+                nickname: req.body.nickname,
                 password: hash,
                 isAdmin: false
             });
@@ -23,7 +23,7 @@ exports.signup = (req, res, next) => {
 
 exports.signin = (req, res, next) => {
     // On cherche l'utilisateur
-    User.findOne({ pseudo: req.body.pseudo })
+    User.findOne({ nickname: req.body.nickname })
         .then(user => {
             if (user) {
                 // Une fois trouvé, on compare son password crypté à ce qu'il y a dans la DB
@@ -33,7 +33,7 @@ exports.signin = (req, res, next) => {
                             // Si le résultat est positif, alors on renvoie les infos de l'utilisateur
                             res.status(200).json({
                                 userId: user.id,
-                                pseudo: user.pseudo,
+                                nickname: user.nickname,
                                 isAdmin: user.isAdmin,
                                 likedFilmsId: user.likedFilmsId,
                                 dislikedFilmsId: user.dislikedFilmsId,

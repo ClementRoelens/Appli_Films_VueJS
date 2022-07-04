@@ -1,6 +1,8 @@
 const Film = require("../models/film");
+const AncienFilm = require("../models/ancienfilm");
 const fs = require("fs");
 const config = require("config");
+const film = require("../models/film");
 const genres = config.get("Genres");
 
 // Fonction prenant un tableau de films pour en retourner 20 au hasard
@@ -289,27 +291,6 @@ exports.dislike = (req, res, next) => {
 // Uniquement pour le développement
 
 exports.modifyFilm = (req, res, next) => {
-    Film.findOne({_id:req.params.filmId})
-    .then(film=>{
-        console.log("Film à modifier : "+film.title);
-        console.log("id de l'avis : "+req.params.opinionId);
-        const index = film.avis.indexOf(req.params.opinionId);
-        console.log("Index à supprimer : " + index);
-        let newOpinionsList = film.opinionsId;
-        newOpinionsList.splice(index, 1);
-        console.log("Nouvelle liste : " + newOpinionsList);
-        Film.findOneAndUpdate(
-            { _id: req.params.filmId },
-            { opinionsId: newOpinionsList },
-            { new: true })
-            .then(updatedFilm => {
-                console.log(reqDate() + "Succès de la de mise à jour du film d'id " + req.params.filmId);
-                res.status(200).json(updatedFilm);
-            })
-            .catch(error => {
-                console.log(reqDate() + "Erreur dans la mise à jour film d'id " + req.params.filmId + error);
-                res.status(400).json(error);
-            })
-    })
+   
 };
 

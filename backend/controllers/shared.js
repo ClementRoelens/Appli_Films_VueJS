@@ -94,7 +94,7 @@ exports.eraseOneOpinion = (req, res, next) => {
                                     console.log("Film correctement modifié, on va maintenant modifier l'user");
                                     User.find({ _id: opinion.userId })
                                         .then(user => {
-                                            console.log("User trouvé : " + user.pseudo);
+                                            console.log("User trouvé : " + user.nickname);
                                             console.log("Liste actuelle : " + user.opinionsId);
                                             const index = user.opinionsId.indexOf(opinion._id);
                                             console.log("Index à supprimer : " + index);
@@ -108,7 +108,7 @@ exports.eraseOneOpinion = (req, res, next) => {
                                                 .then(updatedUser => {
                                                     console.log("User correctement modifié\nRécapitulatif : ");
                                                     console.log("id de l'avis à supprimer : " + req.params.opinionId);
-                                                    console.log("avis émis par " + user.pseudo + " à propos du film " + film.titre);
+                                                    console.log("avis émis par " + user.nickname + " à propos du film " + film.titre);
                                                     console.log("Liste des avis du film : " + updatedFilm.opinionsId);
                                                     console.log("Liste des avis par l'user : " + updatedUser.opinionsId);
                                                     res.status(200).json({
