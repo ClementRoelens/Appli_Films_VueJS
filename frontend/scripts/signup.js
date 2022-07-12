@@ -7,7 +7,7 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        inscription() {
+        signup() {
             const bodyReq = {
                 nickname: this.nickname,
                 password: this.password
@@ -19,7 +19,7 @@ const app = Vue.createApp({
             };
             fetch(this.Url + "user/signup", myInit)
                 .then(res => {
-                    alert(res);
+                    alert("Votre compte a bien été créé");
                     window.location.href = "./index.html";
                 })
                 .catch(error => {

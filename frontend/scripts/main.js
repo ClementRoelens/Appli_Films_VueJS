@@ -18,6 +18,8 @@ const app = Vue.createApp({
             dislikedIcon: "../icons/thumbdown.png",
             opinions: [],
             opinionIndex: 0,
+            selectedOpinion: null,
+            likedOpinionIcon: "../icons/empty_heart.png",
             films: [],
             // Ces genres sont utilisés pour construire la liste des genres en utilisant un v-for.
             // La propriété "active" est utilisée pour montrer à quel genre le film sélectionné appartient
@@ -126,53 +128,36 @@ const app = Vue.createApp({
                 .catch(error => console.log(error))
         },
 
-        // POST
+        // Likes et avis
         like() {
             // Il n'est pas possible de liker sans être authentifié
             if (this.isLogged) {
                 // On prépare deux requêtes : d'abord une portant sur l'utilisateur
                 const bodyReq = {
                     filmId: this.filmId,
-                    userId: this.userId
+                    userId: this.userId,
+                    likes: this.likes,
+                    likedFilmsId: this.likedFilmsId
                 };
                 const myInit = {
                     body: JSON.stringify(bodyReq),
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": "Bearer " + this.token
                     }
                 };
-                fetch(this.Url + "user/likedFilm", myInit)
+                fetch(this.Url + "shared/likeFilm", myInit)
                     .then(user => user.json()
                         .then(res => {
                             // Si le film était déjà liké, la requête a enlevé le film de la liste des films likés. S'il ne l'était pas, elle l'a ajouté
                             // On reçoit la nouvelle liste et surtout l'opération qui en découle : soit ajouter soit enlever un like à ce film
-                            localStorage.removeItem("likedFilmsId");
-                            localStorage.setItem("likedFilmsId", JSON.stringify(res.user.likedFilmsId));
                             this.likedFilmsId = res.user.likedFilmsId;
-                            // On prépare la deuxième requête sur le film maintenant qu'on sait si on doit incrémenter ou désincrémenter le nombre de likes
-                            const bodyReq2 = {
-                                likes: this.likes,
-                                operation: res.operation,
-                                userId: this.userId
-                            };
-                            const myInit2 = {
-                                body: JSON.stringify(bodyReq2),
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "Authorization": "Bearer " + this.token
-                                }
-                            };
-                            fetch(this.Url + "film/like/" + this.filmId, myInit2)
-                                .then(res => res.json()
-                                    .then(film => {
-                                        console.log("Succès de la requête de mise à jour du film");
-                                        // On appelle la fonction d'assignation pour mettre à jour le film maintenant modifié
-                                        this.filmAssignation(film);
-                                    })).catch(error => console.log(error));
-                        })).catch(error => console.log(error));
+                            localStorage.setItem("likedFilmsId", JSON.stringify(this.likedFilmsId));
+                            this.likes = res.film.likes;
+                            this.filmUpdate();
+                        }))
+                    .catch(error => console.log(error));
             }
             else {
                 alert("Connectez-vous pour effectuer cette action");
@@ -183,44 +168,29 @@ const app = Vue.createApp({
             if (this.isLogged) {
                 const bodyReq = {
                     filmId: this.filmId,
-                    userId: this.userId
+                    userId: this.userId,
+                    dislikes: this.dislikes,
+                    dislikedFilmsId: this.dislikedFilmsId
                 };
                 const myInit = {
                     body: JSON.stringify(bodyReq),
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": "Bearer " + this.token
                     }
                 };
-                fetch(this.Url + "user/dislikedFilm", myInit)
+                fetch(this.Url + "shared/dislikeFilm", myInit)
                     .then(user => user.json()
                         .then(res => {
-                            localStorage.removeItem("dislikedFilmsId");
-                            localStorage.setItem("dislikedFilmsId", JSON.stringify(res.user.dislikedFilmsId));
+                            // Si le film était déjà liké, la requête a enlevé le film de la liste des films likés. S'il ne l'était pas, elle l'a ajouté
+                            // On reçoit la nouvelle liste et surtout l'opération qui en découle : soit ajouter soit enlever un like à ce film
                             this.dislikedFilmsId = res.user.dislikedFilmsId;
-
-                            const bodyReq2 = {
-                                dislikes: this.dislikes,
-                                operation: res.operation
-                            };
-                            const myInit2 = {
-                                body: JSON.stringify(bodyReq2),
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "Authorization": "Bearer " + this.token
-                                }
-                            };
-                            fetch(this.Url + "film/dislike/" + this.filmId, myInit2)
-                                .then(res => res.json()
-                                    .then(film => {
-                                        console.log("Succès de la requête de mise à jour du film");
-                                        this.filmAssignation(film);
-                                    })
-                                ).catch(error => console.log(error));
-                        })
-                    )
+                            localStorage.setItem("dislikedFilmsId", JSON.stringify(this.dislikedFilmsId));
+                            this.dislikes = res.film.dislikes;
+                            this.filmUpdate();
+                            console.log("Après l'opération, le film a " + this.dislikes + " dislikes");
+                        }))
                     .catch(error => console.log(error));
             }
             else {
@@ -230,6 +200,29 @@ const app = Vue.createApp({
         addOpinion() {
             localStorage.setItem("tempOpinionId", this.filmId);
             window.location.href = './opinion.html';
+        },
+        likeOpinion() {
+            const bodyReq = {
+                userId: this.userId,
+                filmId: this.filmId,
+                opinionId: this.selectedOpinion._id
+            };
+            const myInit = {
+                body: JSON.stringify(bodyReq),
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + this.token
+                }
+            };
+            fetch(this.Url + "shared/likeOpinion/", myInit)
+                .then(res => res.json()
+                    .then(json => {
+                        this.likedOpinionsId = json.user.likedOpinionsId;
+                        this.selectedOpinion.likes = json.opinion.likes;
+                        this.opinionUpdate();
+                    }))
+                .catch(error => { console.log(error); });
         },
 
         // Affichage et autre
@@ -243,46 +236,81 @@ const app = Vue.createApp({
             this.path = this.Url + film.imageUrl;
             this.likes = film.likes;
             this.dislikes = film.dislikes;
+            this.opinions = [];
+            this.selectedOpinion = null;
             let i = 0;
             film.opinionsId.forEach(opinionId => {
                 fetch(this.Url + "opinion/getOneOpinion/" + opinionId)
-                    .then(res => res.json().
-                        then(receivedOpinion => {
-                            this.opinions.push(receivedOpinion);
-                            i++;
-                            // Les avis les plus likés vont être présentés en premier
-                            // On les trie une fois que tous les avis ont été ajoutés
-                            if (film.opinions.length > 1 && i == film.opinions.length) {
-                                opinions.sort((a, b) => {
-                                    return a.likes - b.likes;
-                                });
-                            }
-                        })
-                        .catch(error => {
-                            console.log("Erreur lors de la réception de l'avis " + opinionId);
-                            console.log(error);
-                        }))
+                    .then(res => {
+                        res.json()
+                            .then(receivedOpinion => {
+                                this.opinions.push(receivedOpinion);
+                                i++;
+                                // Les avis les plus likés vont être présentés en premier
+                                // On les trie une fois que tous les avis ont été ajoutés
+                                if (film.opinionsId.length > 1 && i == film.opinionsId.length) {
+                                    this.opinions.sort((a, b) => {
+                                        return a.likes - b.likes;
+                                    });
+                                }
+                                if (i == film.opinionsId.length) {
+                                    this.opinionIndex = 0;
+                                    this.selectedOpinion = this.opinions[0];
+                                    this.opinionUpdate();
+                                    console.log("Avis pour " + this.title + " : " + this.opinions);
+                                    console.log("Avis sélectionné : " + this.selectedOpinion);
+                                }
+                            })
+                            .catch(error => {
+                                console.log("Erreur lors de la réception de l'avis " + opinionId);
+                                console.log(error);
+                            })
+                    })
             });
 
-            this.opinionIndex = 0;
             // Les genres auxquels le film appartient seront dégrisés
             this.genres.forEach(genre => {
                 genre.active = film.genres.includes(genre.name) ? true : false;
             });
+            this.filmUpdate();
+        },
+        filmUpdate() {
             // Si le film a déjà été liké par l'utilisateur, le pouce vers le haut apparaîtra bleu
             if (this.likedFilmsId.includes(this.filmId)) {
+                console.log("Ce film a été liké par l'utilisateur");
                 this.likedIcon = "../icons/thumbup_done.png";
             }
             else {
+                console.log("Ce film n'a pas été liké par l'utilisateur");
                 this.likedIcon = "../icons/thumbup.png";
             }
             // Si le film a déjà été disliké par l'utilisateur, le pouce vers le bas apparaîtra rouge
             if (this.dislikedFilmsId.includes(this.filmId)) {
+                console.log("Ce film a été disliké par l'utilisateur");
                 this.dislikedIcon = "../icons/thumbdown_done.png";
             }
             else {
+                console.log("Ce film n'a pas été disliké par l'utilisateur");
                 this.dislikedIcon = "../icons/thumbdown.png";
             }
+        },
+        opinionUpdate() {
+            // Si l'avis a été liké par l'utilisateur, l'icône change
+            if (this.likedOpinionsId.includes(this.selectedOpinion._id)) {
+                this.likedOpinionIcon = "../icons/full_heart.png";
+            }
+            else {
+                this.likedOpinionIcon = "../icons/empty_heart.png";
+            }
+        },
+        opinionSelection(operation) {
+            const newIndex = this.opinionIndex + operation;
+            if (newIndex >= 0 && newIndex < this.opinions.length){
+                this.opinionIndex += operation;
+                this.selectedOpinion = this.opinions[this.opinionIndex];
+                this.opinionUpdate();
+            }
+            
         },
         signout() {
             // L'utilisateur se déconnecte : on vide ses infos du localStorage et on redonne aux data leurs valeurs de base
@@ -328,8 +356,10 @@ const app = Vue.createApp({
 
 //TO DO
 
+// Vérifier chaque requête, que les données puissent le moins possibles être falsifiées/corrompues par l'utilisateur
 // Gérer dans la page de connexion les cas de mdp incorrect...
-// Gérer l'expiration du JWT
+// Gérer l'expiration du JWT (et le JWT en général)
+// Implenter les res.ok dans tous les fetch
 
 // Créer un middleware d'authentification admin ?
 

@@ -129,9 +129,28 @@ li {
     margin-top: 5px;
 }
 
-#opinions_and_likes .icons {
+#opinions_and_likes .icons , 
+#opinionIcons img
+ {
     width: 30px;
     cursor: pointer;
+}
+
+#opinionIcons {
+    display: flex;
+    justify-content: space-around;
+    width: 140px;
+    margin: auto;
+}
+
+#opinionIcons h1 {
+    font-size:1.4em;
+    margin-bottom:10px;
+}
+
+#opinionIcons > div > img {
+    vertical-align: middle;
+    margin-left: 4px;
 }
 
 h1 {

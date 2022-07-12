@@ -30,8 +30,6 @@ router.post("/addOneFilm", multer, filmCtrl.addOneFilm);
 // router.delete("/:id",filmCtrl.supprimer);
 
 
-// Uniquement utilisé pour le développement
-router.put("/maj", filmCtrl.modifyFilm);
 
 
 module.exports = router;

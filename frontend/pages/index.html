@@ -48,17 +48,29 @@
                             <div>{{likes}}</div>
                         </div>
                         <div id="dislikes">
-                            <img @click="dislike()" class="icons" :src="dislikedIcon" alt="Likes">
+                            <img @click="dislike()" class="icons" :src="dislikedIcon" alt="Dislikes">
                             <div>{{dislikes}}</div>
                         </div>
                         <div id="opinionIcon">
-                            <img @click="ajouterAvis()" class="icons" src="../icons/note.png" alt="Avis">
+                            <img @click="addOpinion()" class="icons" src="../icons/note.png" alt="Avis">
                             <div>{{opinions.length}}</div>
                         </div>
                     </div>
                     <img id="poster" :src="path" :alt="title">
                     <div id="opinionArea">
-                        <div id="opinion" v-if="opinions.length > 0">{{opinions[opinionIndex].content}}</div>
+                        <div id="opinion" v-if="selectedOpinion">
+                            <h1>{{selectedOpinion.author}}</h1>
+                            <p>{{opinions[opinionIndex].content}}</p>
+                            <div id="opinionIcons">
+                                <img src="../icons/arrow_left.png" alt="arrow_left" @click="opinionSelection(-1)">
+                                <div>
+                                    <span>{{selectedOpinion.likes}}</span>
+                                    <img :src="likedOpinionIcon" alt="heart_icon" @click="likeOpinion()">
+                                </div>
+                                <img src="../icons/arrow_right.png" alt="arrow_right" @click="opinionSelection(1)">
+                            </div>
+                           
+                        </div>
                     </div>
                 </div>
                 <h2 id="director" @click="getFilms('getRandomInOneDirector/',director)">{{director}}</h2>

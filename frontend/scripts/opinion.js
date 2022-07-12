@@ -10,8 +10,9 @@ const app = Vue.createApp({
         sendOpinion() {
             const bodyReq = {
                 filmId: this.filmId,
-                userId:localStorage.getItem("id"),
-                contenu: this.opinion
+                userId: localStorage.getItem("id"),
+                content: this.opinion,
+                author: localStorage.getItem("nickname")
             };
             let myInit = {
                 body: JSON.stringify(bodyReq),
@@ -20,23 +21,37 @@ const app = Vue.createApp({
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("jwt")
                 }
-        };
-        fetch(this.Url+"shared/newOpinion",myInit)
-        .then(res => {
-            if (res.ok) {
-                res.json()
-                .then(resjson => {
-                    console.log(resjson.message);
+            };
+            fetch(this.Url + "shared/addOneOpinion", myInit)
+                .then(res => {
+                    if (res.ok) {
+                                myInit = {
+                                    method: "GET",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        "Authorization": "Bearer " + localStorage.getItem("jwt")
+                                    }
+                                };
+                                // Maintenant que l'avis a été déposé, on met à jour la liste de l'utilisateur
+                                fetch(this.Url + "user/getOneUser/"+ localStorage.getItem("id") , myInit)
+                                .then(user=>{
+                                    localStorage.setItem("opinionsId",user.opinionsId);
+                                    window.location.href = "./index.html";
+                                })
+                                .catch();
+                    
+                            }
+                    else {
+                        console.log("Erreur");
+                        console.log(res.Erreur);
+                        alert("Une erreur s'est produite");
+                    }
                 })
-            }
-            else {
-                console.log("Erreur");
-                console.log(res.Erreur);
-                
-            }
-        })
-
-    }
+                .catch(error=>{
+                    console.log(error);
+                    alert("Une erreur s'est produite...");
+                });
+        }
         // Ancienne version de la fonction, en appelant plusieurs routes différentes de l'API
         // 
         // posterAvis() {

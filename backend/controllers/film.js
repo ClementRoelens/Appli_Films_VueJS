@@ -1,9 +1,7 @@
 const Film = require("../models/film");
-const AncienFilm = require("../models/ancienfilm");
-const fs = require("fs");
-const config = require("config");
-const film = require("../models/film");
-const genres = config.get("Genres");
+// const fs = require("fs");
+// const config = require("config");
+// const genres = config.get("Genres");
 
 // Fonction prenant un tableau de films pour en retourner 20 au hasard
 const getNfilms = (films) => {
@@ -219,19 +217,7 @@ exports.addOneFilm = (req, res, next) => {
 };
 
 exports.like = (req, res, next) => {
-    // On update le film en question en changeant seulement le nombre de like
-    // La clé "operation" est créé par le controller User et transmise par le front, et dépend de si l'utilisateur ajouter ou enlève un like
-    Film.findOneAndUpdate(
-        { _id: req.params.id },
-        { likes: req.body.likes + req.body.operation },
-        { new: true }
-    ).then(updatedFilm => {
-        console.log(reqDate() + "Succès de l'ajout d'un like à " + updatedFilm.title + " les portant à " + updatedFilm.likes);
-        res.status(201).json(formatDate(updatedFilm));
-    }).catch(error => {
-        console.log(reqDate() + "Erreur dans l'ajout d'un like au film d'id " + req.params.id + "\n" + error);
-        res.status(400).json(error);
-    });
+   
 };
 
 exports.dislike = (req, res, next) => {

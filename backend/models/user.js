@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const filmSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     nickname : { type: String, required: true },
     password: { type: String, required: true },
     likedFilmsId: { type: [String], required: true, default: [] },
@@ -10,4 +10,4 @@ const filmSchema = mongoose.Schema({
     isAdmin: { type: Boolean, required: true, default: false }
 });
 
-module.exports = mongoose.model("User", filmSchema);
+module.exports = mongoose.model("User", userSchema);

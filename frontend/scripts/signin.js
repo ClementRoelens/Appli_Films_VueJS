@@ -7,7 +7,7 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        connexion() {
+        signin() {
             const bodyReq = {
                 nickname: this.nickname,
                 password: this.password
