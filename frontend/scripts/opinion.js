@@ -35,8 +35,7 @@ const app = Vue.createApp({
                                 // Maintenant que l'avis a été déposé, on met à jour la liste de l'utilisateur
                                 fetch(this.Url + "user/getOneUser/"+ localStorage.getItem("id") , myInit)
                                 .then(user=>{
-                                    localStorage.setItem("opinionsId",user.opinionsId);
-                                    window.location.href = "./index.html";
+                                    window.location.href = "../pages/index.html";
                                 })
                                 .catch();
                     

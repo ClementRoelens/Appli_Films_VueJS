@@ -13,7 +13,7 @@
 
 <body>
     <div id="app">
-        <button id="add" onclick="window.location.href='./add_film.html'" v-if="isAdmin">Ajouter un film</button>
+        <button v-if="isAdmin" id="add" onclick="window.location.href='./add_film.html'" >Ajouter un film</button>
         <div id="account">
             <div id="signin">
                 <button onclick="window.location.href='./signin.html'" v-if="!isLogged">Connexion</button>

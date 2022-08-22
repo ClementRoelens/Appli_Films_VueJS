@@ -112,8 +112,8 @@ const app = Vue.createApp({
                 ).catch(error => console.log(error))
         },
         getFilms(type = "getRandomFilms", paramUrl = "") {
-            // Cette fonction récupère 25 films selon un critère ou non
-            // Par défaut, elle récupère au hasard 25 films de la liste sans aucun filtre
+            // Cette fonction récupère 20 films selon un critère ou non
+            // Par défaut, elle récupère au hasard 20 films de la liste sans aucun filtre
             const myInit = { method: "GET" };
             const requeteUrl = this.Url + "film/" + type + paramUrl;
             fetch(requeteUrl, myInit)
@@ -189,7 +189,6 @@ const app = Vue.createApp({
                             localStorage.setItem("dislikedFilmsId", JSON.stringify(this.dislikedFilmsId));
                             this.dislikes = res.film.dislikes;
                             this.filmUpdate();
-                            console.log("Après l'opération, le film a " + this.dislikes + " dislikes");
                         }))
                     .catch(error => console.log(error));
             }
@@ -198,8 +197,13 @@ const app = Vue.createApp({
             }
         },
         addOpinion() {
-            localStorage.setItem("tempOpinionId", this.filmId);
-            window.location.href = './opinion.html';
+            if (this.isLogged){
+                localStorage.setItem("tempOpinionId", this.filmId);
+                window.location.href = './opinion.html';
+            }
+            else {
+                alert("Connectez-vous pour effectuer cette action");
+            }
         },
         likeOpinion() {
             const bodyReq = {
@@ -337,7 +341,7 @@ const app = Vue.createApp({
                 this.isLogged = true;
                 this.userId = localStorage.getItem("id");
                 this.nickname = localStorage.getItem("nickname");
-                this.isAdmin = localStorage.getItem("isAdmin");
+                this.isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
                 this.likedFilmsId = JSON.parse(localStorage.getItem("likedFilmsId"));
                 this.dislikedFilmsId = JSON.parse(localStorage.getItem("dislikedFilmsId"));
                 this.opinionsId = JSON.parse(localStorage.getItem("opinionsId"));
@@ -374,5 +378,3 @@ const app = Vue.createApp({
 //Changer les URL des images pour ne pas intégrer le "localhost"...
 
 //Vérifier le fonctionnement du JWT et de la chaîne qu'on donne quand on sign
-
-// Une fois tout fini : revoir les CORS-policies...
