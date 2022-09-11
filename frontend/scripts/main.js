@@ -135,9 +135,7 @@ const app = Vue.createApp({
                 // On prépare deux requêtes : d'abord une portant sur l'utilisateur
                 const bodyReq = {
                     filmId: this.filmId,
-                    userId: this.userId,
-                    likes: this.likes,
-                    likedFilmsId: this.likedFilmsId
+                    userId: this.userId
                 };
                 const myInit = {
                     body: JSON.stringify(bodyReq),
@@ -168,9 +166,7 @@ const app = Vue.createApp({
             if (this.isLogged) {
                 const bodyReq = {
                     filmId: this.filmId,
-                    userId: this.userId,
-                    dislikes: this.dislikes,
-                    dislikedFilmsId: this.dislikedFilmsId
+                    userId: this.userId
                 };
                 const myInit = {
                     body: JSON.stringify(bodyReq),
